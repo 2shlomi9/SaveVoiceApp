@@ -21,6 +21,8 @@ public class AddGroupIncideActivity extends AppCompatActivity {
     private Button buttonSave;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
