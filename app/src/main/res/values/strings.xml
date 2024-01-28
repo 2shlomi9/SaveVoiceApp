@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SafeVoice</string>
+    <string name="log_in">Log In</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">Welcome !</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">Login failed</string>
+    <string name="todo">TODO</string>
+    <string name="login">LOGIN</string>
+    <string name="new_to_instagram_register">New to Instagram? Register</string>
+    <string name="password">Password</string>
+    <string name="please_wait">Please Wait!</string>
+    <string name="new_to_safevoice_register">New to SafeVoice? Register</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_fragment">home_fragment</string>
+    <string name="profile_fragment">profile_fragment</string>
+    <string name="alarm_fragment">alarm_fragment</string>
+    <string name="search_fragment">search fragment</string>
+    <string name="email">email</string>
+    <string name="new_to_safevice_register">new_to_safevice_register</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="create_group">Create Group</string>
+    <string name="create_group_fab" />
+</resources>
