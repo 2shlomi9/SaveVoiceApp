@@ -19,6 +19,8 @@ public class AddGroupIncideActivity extends AppCompatActivity {
     private EditText editTextGroupName;
     private Button buttonBack;
     private Button buttonSave;
+
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
