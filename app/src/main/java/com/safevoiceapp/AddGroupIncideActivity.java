@@ -85,7 +85,7 @@ public class AddGroupIncideActivity extends AppCompatActivity {
             groupData.put("mengerId", userId);
             groupData.put("members", members);
 
-       //     databaseOperations.updateMengerUser(userId,groupName);
+
 
             collectionRef.add(groupData)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

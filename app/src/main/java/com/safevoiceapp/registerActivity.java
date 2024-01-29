@@ -40,6 +40,7 @@ public class registerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView loginUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private User user;
 
 
 
@@ -58,6 +59,7 @@ public class registerActivity extends AppCompatActivity {
         passwordTextView = findViewById(R.id.password);
         Btn = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
+        user = new User();
 
    //     pd = new ProgressDialog(this);
         // Set on Click Listener on Registration button
@@ -76,41 +78,9 @@ public class registerActivity extends AppCompatActivity {
             }
         });
     }
-    private void addUserToFirestore(final String name, final String email) {
-
-        CollectionReference usersCollection = db.collection("users");
-        CollectionReference groupsCollection = db.collection("groups");
-        List<String> groupIds = new ArrayList<>();
-        List<String> MengerGroup = new ArrayList<>();
 
 
-        // Create a new user object
-        Map<String, Object> user = new HashMap<>();
-        user.put("id",mAuth.getUid());
-        user.put("name", name);
-        user.put("email", email);
-        user.put("password", passwordTextView.getText().toString());
-        user.put("groups", groupIds);  // Initialize with an empty list
-        user.put("MangerGroup", MengerGroup);  // Initialize with an empty list
 
-        // Add the user to the "users" collection
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        // Handle successful addition (if needed)
-                        Log.d(TAG, "User added to Firestore with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle failure (if needed)
-                        Log.w(TAG, "Error adding user to Firestore", e);
-                    }
-                });
-    }
     private void registerNewUser()
     {
 
@@ -156,7 +126,7 @@ public class registerActivity extends AppCompatActivity {
                                     = new Intent(registerActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
-                            addUserToFirestore(name, email);
+                            user.addNewUser(name, email);
                         }
                         else {
 
