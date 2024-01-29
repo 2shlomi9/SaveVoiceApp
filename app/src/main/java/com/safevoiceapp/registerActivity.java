@@ -86,7 +86,7 @@ public class registerActivity extends AppCompatActivity {
         String validationMessage;
         // Validations for input email and password
         validationMessage = User.check_email(email);
-        if(validationMessage.equals("accept")){
+        if(!validationMessage.equals("accept")){
             Toast.makeText(getApplicationContext(),
                             validationMessage,
                             Toast.LENGTH_LONG)
@@ -94,7 +94,7 @@ public class registerActivity extends AppCompatActivity {
             return;
         }
         validationMessage = User.check_pass(password);
-        if (validationMessage.equals("accept")) {
+        if (!validationMessage.equals("accept")) {
             Toast.makeText(getApplicationContext(),
                             validationMessage,
                             Toast.LENGTH_LONG)
@@ -103,27 +103,27 @@ public class registerActivity extends AppCompatActivity {
         }
 
         // create new user or register new user
-        mAuth
-                .createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
+
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(),
                                             "Registration successful!",
                                             Toast.LENGTH_LONG)
                                     .show();
 
-
+                            User newUser = new User(first_name, last_name, user_name, email);
+                            user.addNewUser(newUser);
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(registerActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
-                            User newUser = new User(first_name, last_name, user_name, email);
-                            user.addNewUser(newUser);
+
+
                         }
                         else {
 

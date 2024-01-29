@@ -13,6 +13,11 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,23 +30,22 @@ import java.util.Map;
 import classes.User;
 
 public class User_handle {
-    private ArrayList<String> userMangerGroups;
-
-    private ArrayList<String> userGroups;
-
-    private String userName;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth;
     private CollectionReference usersCollection;
+    private DatabaseReference reference;
+    private User user;
 
     private void initUI() {
 
         mAuth = FirebaseAuth.getInstance();
+
         usersCollection = db.collection("users");
 
     }
     public void addNewUser(User user){
+        initUI();
+
         db.collection("users")
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -69,68 +73,81 @@ public class User_handle {
         return mAuth.getUid();
     }
 
-    public String getName(){
-        usersCollection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Access the group list from the document
-                            userName = (String) document.get("name");
-                        }
-                    } else {
-                        Log.w("TAG", "Error getting documents: ", task.getException());
-                    }
-                });
-
-        return userName;
-    }
-    public ArrayList<String> getUserManagerGroups() {
+    public User getUser(){
+        String uid =getId();
 
         usersCollection.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // Access the group list from the document
-                            ArrayList<String> documentGroups = (ArrayList<String>) document.get("MangerGroup");
-                            userMangerGroups.addAll(documentGroups);
+                            reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    user = snapshot.getValue(User.class);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                         }
                     } else {
                         Log.w("TAG", "Error getting documents: ", task.getException());
                     }
                 });
 
-        return userMangerGroups;
+        return user;
     }
-    public ArrayList<String> getUserGroups() {
-
-        usersCollection.get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Access the group list from the document
-                            ArrayList<String> documentGroups = (ArrayList<String>) document.get("groups");
-                            userGroups.addAll(documentGroups);
-                        }
-                    } else {
-                        Log.w("TAG", "Error getting documents: ", task.getException());
-                    }
-                });
-
-        return userGroups;
-    }
-    public void addMangerGroups(String groupID){
-        userMangerGroups.add(groupID);
-    }
-    public void deleteMangerGroups(String groupID){
-        userMangerGroups.remove(groupID);
-    }
-    public void addGroups(String groupID){
-        userGroups.add(groupID);
-
-    }
-    public void deleteGroups(String groupID){
-        userGroups.remove(groupID);
-
-    }
+//    public ArrayList<String> getUserManagerGroups() {
+//
+//        usersCollection.get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            // Access the group list from the document
+//                            ArrayList<String> documentGroups = (ArrayList<String>) document.get("MangerGroup");
+//                            userMangerGroups.addAll(documentGroups);
+//                        }
+//                    } else {
+//                        Log.w("TAG", "Error getting documents: ", task.getException());
+//                    }
+//                });
+//
+//        return userMangerGroups;
+//    }
+//    public ArrayList<String> getUserGroups() {
+//
+//        usersCollection.get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            // Access the group list from the document
+//                            ArrayList<String> documentGroups = (ArrayList<String>) document.get("groups");
+//                            userGroups.addAll(documentGroups);
+//                        }
+//                    } else {
+//                        Log.w("TAG", "Error getting documents: ", task.getException());
+//                    }
+//                });
+//
+//        return userGroups;
+//    }
+//    public void addMangerGroups(String groupID){
+//        userMangerGroups.add(groupID);
+//    }
+//    public void deleteMangerGroups(String groupID){
+//        userMangerGroups.remove(groupID);
+//    }
+//    public void addGroups(String groupID){
+//        userGroups.add(groupID);
+//
+//    }
+//    public void deleteGroups(String groupID){
+//        userGroups.remove(groupID);
+//
+//    }
 
 }

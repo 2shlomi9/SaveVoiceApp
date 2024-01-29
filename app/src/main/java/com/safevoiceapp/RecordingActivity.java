@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import classes.User;
+
 
 public class RecordingActivity extends AppCompatActivity {
 
@@ -72,13 +74,13 @@ public class RecordingActivity extends AppCompatActivity {
     private List<String> geters;
 
 
-    private DatabaseReference mRootRef;
-    private FirebaseAuth mAuth;
+
 
     ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 

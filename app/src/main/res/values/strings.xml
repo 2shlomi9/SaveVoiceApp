@@ -28,4 +28,5 @@
     <string name="start_recording">Start Recording</string>
     <string name="create_group">Create Group</string>
     <string name="create_group_fab" />
+    <string name="log_out">log out</string>
 </resources>

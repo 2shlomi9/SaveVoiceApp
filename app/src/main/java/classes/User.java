@@ -108,6 +108,11 @@ public class User {
             return "Please enter at least 6 characters.";
         return "accept";
     }
+    public String toString(){
+        return "user name : " + this.userName
+                + "\n first name :"+ this.firstName
+                +"\n last name: " + this.lastName;
+    }
 
 
 
