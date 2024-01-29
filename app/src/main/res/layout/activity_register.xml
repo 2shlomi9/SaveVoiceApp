@@ -15,13 +15,30 @@
         android:layout_height="50dp"
         android:src="@drawable/logo" />
 
+
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/firstname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:background="@drawable/edit_text_background"
-        android:hint="Name"
+        android:hint="First name"
+        android:padding="10dp" />
+    <EditText
+        android:id="@+id/lastname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Last name"
+        android:padding="10dp" />
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_background"
+        android:hint="Username"
         android:padding="10dp" />
 
     <EditText

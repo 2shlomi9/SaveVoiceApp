@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User {
+import classes.User;
+
+public class User_handle {
     private ArrayList<String> userMangerGroups;
 
     private ArrayList<String> userGroups;
@@ -39,13 +41,7 @@ public class User {
         usersCollection = db.collection("users");
 
     }
-    public void addNewUser(String name, String email){
-        Map<String, Object> user = new HashMap<>();
-        user.put("id",mAuth.getUid());
-        user.put("name", name);
-        user.put("email", email);
-        user.put("groups", userGroups);  // Initialize with an empty list
-        user.put("MangerGroup", userMangerGroups);  // Initialize with an empty list
+    public void addNewUser(User user){
         db.collection("users")
                 .add(user)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
