@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,11 +24,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,13 +39,18 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class RecordingActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_CODE = 1001;
+    private String generatedDocumentId,userId,audioUrl;
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
 
@@ -53,10 +62,14 @@ public class RecordingActivity extends AppCompatActivity {
 
     private boolean isRecording = false;
     private CountDownTimer countDownTimer;
-
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference collectionRef;
+
+    private List<String> geters;
 
 
     private DatabaseReference mRootRef;
@@ -75,11 +88,20 @@ public class RecordingActivity extends AppCompatActivity {
         listenAgainButton = findViewById(R.id.btnListenAgain);
         sendButton = findViewById(R.id.btnSend);
 
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            // User is signed in, get their UID
+            userId = currentUser.getUid();
+        }
+
         // Check and request runtime permissions
         checkMicrophonePermissionAndInitUI();
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        geters = new ArrayList<>();
+        collectionRef = db.collection("Records");
     }
 
     private void initUI() {
@@ -256,7 +278,7 @@ public class RecordingActivity extends AppCompatActivity {
     private void sendAudioToFirebase() {
         if (audioFilePath != null) {
             // Create a reference to the audio file in Firebase Storage
-            StorageReference audioRef = storageRef.child("audio/" + System.currentTimeMillis() + ".MP3");
+            StorageReference audioRef = storageRef.child("audio/" + System.currentTimeMillis() + ".mp3");
 
             // Create Uri for the local audio file
             Uri audioFileUri = Uri.fromFile(new File(audioFilePath));
@@ -265,7 +287,16 @@ public class RecordingActivity extends AppCompatActivity {
             audioRef.putFile(audioFileUri)
                     .addOnSuccessListener(taskSnapshot -> {
                         // File successfully uploaded
-                        Toast.makeText(RecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
+                        // Get the download URL of the uploaded file
+                        audioRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            // uri is the download URL of the uploaded audio file
+                            audioUrl = uri.toString();
+                            // Now you can use audioUrl as needed
+                            Toast.makeText(RecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
+
+                            // You can pass the audioUrl to any method or store it for later use
+                            // Example: saveAudioUrl(audioUrl);
+                        });
                     })
                     .addOnFailureListener(e -> {
                         // Handle the failure
@@ -274,8 +305,9 @@ public class RecordingActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No recording available to send", Toast.LENGTH_SHORT).show();
         }
-        saveRecordsInFirebase();
+        saveRecordsInFirebase(audioUrl);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -284,11 +316,77 @@ public class RecordingActivity extends AppCompatActivity {
             stopRecording();
         }
     }
-    private void saveRecordsInFirebase() {
-        Map<String, Object> groupData = new HashMap<>();
-        groupData.put("recordName", "anthing");
+    private void saveRecordsInFirebase(String audioUrl) {
+
+        LocalDateTime currentDateTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentDateTime = LocalDateTime.now();
+        }
+        DateTimeFormatter formatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        }
+        // Format the current date and time using the defined formatter
+        String formattedDateTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formattedDateTime = currentDateTime.format(formatter);
+        }
 
 
-        db.collection("Records").add(groupData);
+        Map<String, Object> RecordsData = new HashMap<>();
+
+        RecordsData.put("nameAudio", generateUniqueFileName());
+        RecordsData.put("recordTime", formattedDateTime);
+        RecordsData.put("FromGroupId", "anthing");
+        RecordsData.put("MengerId", userId);
+        RecordsData.put("getrsId", geters);
+        RecordsData.put("url", audioUrl);
+
+
+
+
+        collectionRef.add(RecordsData)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        // Document added with generated ID
+                        generatedDocumentId = documentReference.getId();
+                        Log.d("Firestore", "Document added with ID: " + generatedDocumentId);
+
+                        // Now, add the generated ID to your user data HashMap
+                        RecordsData.put("RecordId", generatedDocumentId);
+
+                        // Update the document with the firestoreId
+                        documentReference.update("RecordId", generatedDocumentId)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Firestore", "RecordId updated successfully");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("Firestore", "Error updating RecordId", e);
+                                    }
+                                });
+
+                        // Print the userData with the Firestore-generated ID
+                        Log.d("Firestore", "User data with Firestore ID: " + RecordsData.toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Firestore", "Error adding document", e);
+                    }
+                });
+
     }
+    private String generateUniqueFileName() {
+        // Implement your logic to generate a unique file name
+        // You might want to use timestamps, UUIDs, or some other strategy
+        return "audio_" + System.currentTimeMillis() + ".mp3";
+    }
+
 }
