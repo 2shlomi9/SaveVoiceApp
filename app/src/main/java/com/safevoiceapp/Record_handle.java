@@ -24,12 +24,14 @@ public class Record_handle {
     private CollectionReference recordCollection;
     private DatabaseReference reference;
     private Record record;
-    private void initUI() {
+
+
+    public Record_handle() {
+
         db = FirebaseFirestore.getInstance();
         recordCollection = db.collection("records");
     }
     public void addRecord(Record record){
-        initUI();
 
         db.collection("records")
                 .add(record)

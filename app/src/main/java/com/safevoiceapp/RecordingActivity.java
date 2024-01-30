@@ -45,8 +45,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 
 import classes.User;
+import classes.Record;
 
 
 public class RecordingActivity extends AppCompatActivity {
@@ -72,6 +75,8 @@ public class RecordingActivity extends AppCompatActivity {
     private CollectionReference collectionRef;
 
     private List<String> geters;
+    private Record_handle recordHandle;
+    private User_handle userHandle;
 
 
 
@@ -83,6 +88,8 @@ public class RecordingActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
+        recordHandle = new Record_handle(); // Assuming Group_handle has a default constructor
+        userHandle = new User_handle();
 
         recordButton = findViewById(R.id.btnRecord);
         recordingDuration = findViewById(R.id.tvRecordingDuration);
@@ -94,7 +101,7 @@ public class RecordingActivity extends AppCompatActivity {
         currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             // User is signed in, get their UID
-            userId = currentUser.getUid();
+            userId = userHandle.getId() ;
         }
 
         // Check and request runtime permissions
@@ -104,6 +111,7 @@ public class RecordingActivity extends AppCompatActivity {
         storageRef = storage.getReference();
         geters = new ArrayList<>();
         collectionRef = db.collection("Records");
+        initUI();
     }
 
     private void initUI() {
@@ -334,61 +342,29 @@ public class RecordingActivity extends AppCompatActivity {
             formattedDateTime = currentDateTime.format(formatter);
         }
 
+        String AudioName, RecordId, RecordTime, url, SenderId, SendInGroupId;
+        AudioName = generateUniqueFileName();
+        RecordId = generateRecordId();
+        RecordTime = formattedDateTime;
+        url = audioUrl;
+        SenderId = userId;
+        SendInGroupId = "anthing";
 
-        Map<String, Object> RecordsData = new HashMap<>();
-
-        RecordsData.put("nameAudio", generateUniqueFileName());
-        RecordsData.put("recordTime", formattedDateTime);
-        RecordsData.put("FromGroupId", "anthing");
-        RecordsData.put("MengerId", userId);
-        RecordsData.put("getrsId", geters);
-        RecordsData.put("url", audioUrl);
-
-
-
-
-        collectionRef.add(RecordsData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        // Document added with generated ID
-                        generatedDocumentId = documentReference.getId();
-                        Log.d("Firestore", "Document added with ID: " + generatedDocumentId);
-
-                        // Now, add the generated ID to your user data HashMap
-                        RecordsData.put("RecordId", generatedDocumentId);
-
-                        // Update the document with the firestoreId
-                        documentReference.update("RecordId", generatedDocumentId)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Firestore", "RecordId updated successfully");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e("Firestore", "Error updating RecordId", e);
-                                    }
-                                });
-
-                        // Print the userData with the Firestore-generated ID
-                        Log.d("Firestore", "User data with Firestore ID: " + RecordsData.toString());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error adding document", e);
-                    }
-                });
+        Record newRecord = new Record(AudioName, RecordId, RecordTime, url, SenderId, SendInGroupId);
+        recordHandle.addRecord(newRecord);
 
     }
     private String generateUniqueFileName() {
         // Implement your logic to generate a unique file name
         // You might want to use timestamps, UUIDs, or some other strategy
         return "audio_" + System.currentTimeMillis() + ".mp3";
+    }
+    public static String generateRecordId() {
+        // Generate a random UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Convert the UUID to a string and remove dashes
+        return uuid.toString().replace("-", "");
     }
 
 }

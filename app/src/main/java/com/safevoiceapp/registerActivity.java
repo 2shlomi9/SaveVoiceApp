@@ -79,6 +79,8 @@ public class registerActivity extends AppCompatActivity {
         user_name = user_nameTextView.getText().toString();
         email = emailTextView.getText().toString();
         password = passwordTextView.getText().toString();
+        User newUser = new User(first_name, last_name, user_name, email);
+
 
         String validationMessage;
         // Validations for input email and password
@@ -88,7 +90,7 @@ public class registerActivity extends AppCompatActivity {
                             validationMessage,
                             Toast.LENGTH_LONG)
                     .show();
-            return;
+
         }
         validationMessage = User.check_pass(password);
         if (!validationMessage.equals("accept")) {
@@ -105,20 +107,18 @@ public class registerActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
-
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(),
                                             "Registration successful!",
                                             Toast.LENGTH_LONG)
                                     .show();
 
-                            User newUser = new User(first_name, last_name, user_name, email);
-                            user.addNewUser(newUser);
                             // if the user created intent to login activity
                             Intent intent
                                     = new Intent(registerActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
+                            user.addNewUser(newUser);
                         }
                         else {
 

@@ -12,33 +12,6 @@ public class User {
     private ArrayList<String> userMangerGroups;
     private ArrayList<String> userGroups;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public ArrayList<String> getUserMangerGroups() {
-        return userMangerGroups;
-    }
-
-    public void setUserMangerGroups(ArrayList<String> userMangerGroups) {
-        this.userMangerGroups = userMangerGroups;
-    }
-
-    public ArrayList<String> getUserGroups() {
-        return userGroups;
-    }
-
-    public void setUserGroups(ArrayList<String> userGroups) {
-        this.userGroups = userGroups;
-    }
-
-    /**
-     * constructor
-     */
     public User(String firstName, String lastName, String userName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -84,33 +57,23 @@ public class User {
     public String getEmail() {
         return this.email;
     }
-    public void addToUserGroups(String newUserGroups){
-        this.userGroups.add(newUserGroups);
-    }
-    public void deleteFromUserGroups(String deleteUserGroups){
-        this.userGroups.remove(deleteUserGroups);
-    }
-    public boolean IsExistInUserGroups(String idGroup){
-        if (this.userGroups.contains(idGroup)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    public void addToUserMangerGroups(String newMangerGroup){
-        this.userMangerGroups.add(newMangerGroup);
-    }
-    public void deleteFromUserMangerGroups(String deleteMangerGroup){
-        this.userMangerGroups.remove(deleteMangerGroup);
-    }
-    public boolean IsExistInManegerGroup(String idGroup){
-        if (this.userMangerGroups.contains(idGroup)){
-            return true;
-        }else{
-            return false;
-        }
+
+
+    public ArrayList<String> getUserMangerGroups() {
+        return userMangerGroups;
     }
 
+    public void setUserMangerGroups(ArrayList<String> userMangerGroups) {
+        this.userMangerGroups = userMangerGroups;
+    }
+
+    public ArrayList<String> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(ArrayList<String> userGroups) {
+        this.userGroups = userGroups;
+    }
 
     // ---- END OF GET(ERS) & SET(ERS) ---- //
 

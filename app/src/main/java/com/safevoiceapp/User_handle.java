@@ -39,6 +39,7 @@ public class User_handle {
         usersCollection = db.collection("users");
 
     }
+
     public void addNewUser(User user){
 
         db.collection("users")
@@ -95,4 +96,32 @@ public class User_handle {
 
         return user;
     }
+    //
+//    public void addToUserGroups(String newUserGroups){
+//        this.userGroups.add(newUserGroups);
+//    }
+//    public void deleteFromUserGroups(String deleteUserGroups){
+//        this.userGroups.remove(deleteUserGroups);
+//    }
+//    public boolean IsExistInUserGroups(String idGroup){
+//        if (this.userGroups.contains(idGroup)){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
+//    public void addToUserMangerGroups(String newMangerGroup){
+//        this.userMangerGroups.add(newMangerGroup);
+//    }
+//    public void deleteFromUserMangerGroups(String deleteMangerGroup){
+//        this.userMangerGroups.remove(deleteMangerGroup);
+//    }
+//    public boolean IsExistInManegerGroup(String idGroup){
+//        if (this.userMangerGroups.contains(idGroup)){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
+
 }
