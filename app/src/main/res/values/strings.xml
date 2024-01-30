@@ -29,4 +29,6 @@
     <string name="create_group">Create Group</string>
     <string name="create_group_fab" />
     <string name="log_out">log out</string>
+    <string name="save">Save</string>
+    <string name="save_group">save Group</string>
 </resources>

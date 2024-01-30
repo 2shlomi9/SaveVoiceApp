@@ -3,7 +3,6 @@ package com.safevoiceapp;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import classes.User;
 
@@ -24,11 +22,9 @@ public class registerActivity extends AppCompatActivity {
 
     private EditText emailTextView, passwordTextView;
     private EditText first_nameTextView, last_nameTextView, user_nameTextView;
-    private Button Btn;
-    private ProgressBar progressbar;
+    private Button btnRegister;
     private FirebaseAuth mAuth;
     private TextView loginUser;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private User_handle user;
 
 
@@ -48,11 +44,13 @@ public class registerActivity extends AppCompatActivity {
         user_nameTextView = findViewById(R.id.username);
         emailTextView = findViewById(R.id.email);
         passwordTextView = findViewById(R.id.password);
-        Btn = findViewById(R.id.register);
+        btnRegister = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
         user = new User_handle();
+        initUI();
 
-   //     pd = new ProgressDialog(this);
+    }
+    private void initUI() {
         // Set on Click Listener on Registration button
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +59,7 @@ public class registerActivity extends AppCompatActivity {
 
             }
         });
-        Btn.setOnClickListener(new View.OnClickListener() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -69,7 +67,6 @@ public class registerActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     private void registerNewUser()
@@ -122,8 +119,6 @@ public class registerActivity extends AppCompatActivity {
                                     = new Intent(registerActivity.this,
                                     MainActivity.class);
                             startActivity(intent);
-
-
                         }
                         else {
 

@@ -1,6 +1,5 @@
 package com.safevoiceapp;
 
-
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 
@@ -23,54 +22,45 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
-import classes.User;
+import classes.Group;
 
-public class User_handle {
+public class Group_handle {
     private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
-    private CollectionReference usersCollection;
+    private CollectionReference groupCollection;
     private DatabaseReference reference;
-    private User user;
+    private Group group;
 
-    public User_handle(){
+    public Group_handle() {
 
-        mAuth = FirebaseAuth.getInstance();
+       // mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        usersCollection = db.collection("users");
-
+        groupCollection = db.collection("groups");
     }
-    public void addNewUser(User user){
-
-        db.collection("users")
-                .add(user)
+    public void addNewGroup(Group group) {
+        db.collection("groups")
+                .add(group)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         // Handle successful addition (if needed)
-                        Log.d(TAG, "User added to Firestore with ID: " + documentReference.getId());
-
+                        Log.d(TAG, "group added to Firestore with ID: " + documentReference.getId());
+                        group.setGroupId(documentReference.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Handle failure (if needed)
-                        Log.w(TAG, "Error adding user to Firestore", e);
+                        Log.w(TAG, "Error adding group to Firestore", e);
                     }
                 });
     }
     public void deleteUser(String userDocID){
-        usersCollection.document(userDocID).delete();
+        groupCollection.document(userDocID).delete();
     }
+    public Group getGroup(String uid){
 
-    public String getId(){
-        return mAuth.getUid();
-    }
-
-    public User getUser(){
-        String uid =getId();
-
-        usersCollection.get()
+        groupCollection.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
@@ -78,7 +68,7 @@ public class User_handle {
                             reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    user = snapshot.getValue(User.class);
+                                    group = snapshot.getValue(Group.class);
                                 }
 
                                 @Override
@@ -93,6 +83,8 @@ public class User_handle {
                     }
                 });
 
-        return user;
+        return group;
     }
+
+
 }

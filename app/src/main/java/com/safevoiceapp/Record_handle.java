@@ -1,18 +1,14 @@
 package com.safevoiceapp;
 
-
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 
 import androidx.annotation.NonNull;
 
-
 import android.util.Log;
-
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,55 +18,42 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-
-import classes.User;
-
-public class User_handle {
+import classes.Record;
+public class Record_handle {
     private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
-    private CollectionReference usersCollection;
+    private CollectionReference recordCollection;
     private DatabaseReference reference;
-    private User user;
-
-    public User_handle(){
-
-        mAuth = FirebaseAuth.getInstance();
+    private Record record;
+    private void initUI() {
         db = FirebaseFirestore.getInstance();
-        usersCollection = db.collection("users");
-
+        recordCollection = db.collection("records");
     }
-    public void addNewUser(User user){
+    public void addRecord(Record record){
+        initUI();
 
-        db.collection("users")
-                .add(user)
+        db.collection("records")
+                .add(record)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         // Handle successful addition (if needed)
-                        Log.d(TAG, "User added to Firestore with ID: " + documentReference.getId());
-
+                        Log.d(TAG, "record added to Firestore with ID: " + documentReference.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Handle failure (if needed)
-                        Log.w(TAG, "Error adding user to Firestore", e);
+                        Log.w(TAG, "Error adding record to Firestore", e);
                     }
                 });
     }
-    public void deleteUser(String userDocID){
-        usersCollection.document(userDocID).delete();
+    public void deleteRecord(String userDocID){
+        recordCollection.document(userDocID).delete();
     }
+    public Record getGroup(String uid){
 
-    public String getId(){
-        return mAuth.getUid();
-    }
-
-    public User getUser(){
-        String uid =getId();
-
-        usersCollection.get()
+        recordCollection.get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
@@ -78,7 +61,7 @@ public class User_handle {
                             reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    user = snapshot.getValue(User.class);
+                                    record = snapshot.getValue(Record.class);
                                 }
 
                                 @Override
@@ -93,6 +76,7 @@ public class User_handle {
                     }
                 });
 
-        return user;
+        return record;
     }
+
 }
