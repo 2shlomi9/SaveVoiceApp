@@ -1,23 +1,58 @@
 package classes;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class Group {
     private String groupName, groupId, managerId;
     private ArrayList<String> members;
 
-    public Group(String groupName, String groupId, String managerId) {
-        this.groupName = groupName;
-        this.groupId = groupId;
-        this.managerId = managerId;
-        this.members = new ArrayList<String>();
-    }
+
     public Group(String groupName, String groupId, String managerId,ArrayList<String> members) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.managerId = managerId;
         this.members = members;
     }
+    public Group(String groupName, String groupId, String managerId) {
+        this.groupName = groupName;
+        this.groupId = groupId;
+        this.managerId = managerId;
+        this.members = new ArrayList<String>();
+    }
+    public Group() {
+        this.members = new ArrayList<String>();
+    }
+
+
+    public static void deleteGroupById(String groupId) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Groups");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Group group = dataSnapshot.getValue(Group.class);
+                    if (group.getGroupId().equals(groupId)) {
+                        FirebaseDatabase.getInstance().getReference().child("Groups").child(groupId).removeValue();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }});
+    }
+
     public String getGroupName() {
         return this.groupName;
     }
@@ -44,12 +79,12 @@ public class Group {
     public void addMembers(String joinMember){
         this.members.add(joinMember);
     }
-    public void deleteFromUserGroups(String deleteMember){
+    public void remove_member(String deleteMember){
         this.members.remove(deleteMember);
     }
 
     public ArrayList<String> getMembers() {
-        return members;
+        return this.members;
     }
 
     public void setMembers(ArrayList<String> members) {
@@ -64,9 +99,6 @@ public class Group {
         }
     }
     public String toString(){
-        return "user name : " + this.groupName
-                + "\n first name :"+ this.groupId
-                +"\n last name: " + this.managerId
-                +"\n members: " + this.members.toString();
+        return "group name : " + this.groupName;
     }
 }

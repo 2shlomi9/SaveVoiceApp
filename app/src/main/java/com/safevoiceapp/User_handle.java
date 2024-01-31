@@ -47,6 +47,7 @@ public class User_handle {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+
                         // Handle successful addition (if needed)
                         Log.d(TAG, "User added to Firestore with ID: " + documentReference.getId());
 
@@ -69,7 +70,7 @@ public class User_handle {
     }
 
     public User getUser(){
-        String uid =getId();
+        String uid = getId();
 
         usersCollection.get()
                 .addOnCompleteListener(task -> {

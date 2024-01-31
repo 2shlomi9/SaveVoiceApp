@@ -10,11 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import fragments.HomeFragment;
-import fragments.NotificationFragment;
-import fragments.ProfileFragment;
-import fragments.SearchFragment;
-
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -33,37 +28,40 @@ public class MainActivity extends AppCompatActivity {
 
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
-                    selectorFragment = new HomeFragment();
+                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    return true;
                 } else if (itemId == R.id.nav_group) {
-                    selectorFragment = new SearchFragment();
-                    startActivity(new Intent(MainActivity.this, AddGroupActivity.class));
+                    startActivity(new Intent(MainActivity.this, ManagerGroupActivity.class));
+                    return true;
                 } else if (itemId == R.id.nav_add) {// Start the activity outside of the switch statement
                     startActivity(new Intent(MainActivity.this, RecordingActivity.class));
                     return true; // Return true to prevent further processing
                 } else if (itemId == R.id.voice_chat) {
-                    selectorFragment = new NotificationFragment();
+                    startActivity(new Intent(MainActivity.this, MemberGroupActivity.class));
+                    return true;
                 } else if (itemId == R.id.nav_profile) {
-                    selectorFragment = new ProfileFragment();
+                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    return true; // Return true to prevent further processing
                 }
 
-                if (selectorFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectorFragment).commit();
-                }
+//                if (selectorFragment != null) {
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectorFragment).commit();
+//                }
 
                 return true;
             }
         });
 
-        Bundle intent = getIntent().getExtras();
-        if (intent != null) {
-            String profileId = intent.getString("publisherId");
-
-            getSharedPreferences("PROFILE", MODE_PRIVATE).edit().putString("profileId", profileId).apply();
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-        }
+//        Bundle intent = getIntent().getExtras();
+//        if (intent != null) {
+//            String profileId = intent.getString("publisherId");
+//
+//            getSharedPreferences("PROFILE", MODE_PRIVATE).edit().putString("profileId", profileId).apply();
+//
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+//            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+//        } else {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//        }
     }
 }
