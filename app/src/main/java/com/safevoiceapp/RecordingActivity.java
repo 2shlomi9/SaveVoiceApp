@@ -1,18 +1,22 @@
 package com.safevoiceapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,18 +24,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -42,13 +48,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
-import classes.User;
+import classes.Group;
 import classes.Record;
 
 
@@ -72,11 +76,15 @@ public class RecordingActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DatabaseReference user_reference, group_reference, record_reference;
     private CollectionReference collectionRef;
+    private Spinner group_select;
+    private ArrayList<String> managerGroups_id,managerGroups_names ;
+    private String group_text,groupIdToSend, Uid;
 
     private List<String> geters;
     private Record_handle recordHandle;
-    private User_handle userHandle;
+
 
 
 
@@ -88,20 +96,59 @@ public class RecordingActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
+        managerGroups_id = new ArrayList<String>();
+        managerGroups_names = new ArrayList<String>();
         recordHandle = new Record_handle(); // Assuming Group_handle has a default constructor
-        userHandle = new User_handle();
+        user_reference = FirebaseDatabase.getInstance().getReference("Users");
+        group_reference = FirebaseDatabase.getInstance().getReference("Groups");
+        record_reference = FirebaseDatabase.getInstance().getReference("Records");
+        auth = FirebaseAuth.getInstance();
+        Uid = auth.getCurrentUser().getUid();
+
 
         recordButton = findViewById(R.id.btnRecord);
         recordingDuration = findViewById(R.id.tvRecordingDuration);
         deleteButton = findViewById(R.id.btnDelete);
         listenAgainButton = findViewById(R.id.btnListenAgain);
         sendButton = findViewById(R.id.btnSend);
+        group_reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                refresh_menagerGroupsData(snapshot);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        auth = FirebaseAuth.getInstance();
+            }
+        });
+
+
+        //group filter
+        group_select = findViewById(R.id.group_select);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, managerGroups_names);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        group_select.setAdapter(adapter);
+        group_text = "a";
+        group_select.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                group_text = parent.getItemAtPosition(position).toString();
+                ((TextView)parent.getChildAt(0)).setTextColor(Color.BLACK);
+                deleteButton.setText(group_text);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             // User is signed in, get their UID
-            userId = userHandle.getId() ;
+            userId = Uid;
         }
 
         // Check and request runtime permissions
@@ -110,10 +157,22 @@ public class RecordingActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         geters = new ArrayList<>();
-        collectionRef = db.collection("Records");
         initUI();
     }
 
+    private void refresh_menagerGroupsData(DataSnapshot snapshot) {
+        managerGroups_names.clear();
+        managerGroups_id.clear();
+        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+            Group group = dataSnapshot.getValue(Group.class);
+            if(group.getManagerId().equals(Uid)) {
+                managerGroups_id.add(group.getGroupId());
+                managerGroups_names.add(group.getGroupName());
+            }
+        }
+
+
+    }
     private void initUI() {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,18 +401,59 @@ public class RecordingActivity extends AppCompatActivity {
             formattedDateTime = currentDateTime.format(formatter);
         }
 
-        String AudioName, RecordId, RecordTime, url, SenderId, SendInGroupId;
+        String AudioName, RecordId, RecordTime, url, SenderId;
         AudioName = generateUniqueFileName();
         RecordId = generateRecordId();
         RecordTime = formattedDateTime;
         url = audioUrl;
         SenderId = userId;
-        SendInGroupId = "anthing";
+        group_reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean flag = true;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Group group = dataSnapshot.getValue(Group.class);
+                    if(group.getGroupName().equals(group_text)) {
+                        flag =false;
+                        String groupId = group.getGroupId();
+                        Record newRecord = new Record(AudioName, RecordId, RecordTime, url, SenderId, groupId);
+                        submitRecord(newRecord);
+                    }
+                }
+                if (flag)
+                    Toast.makeText(RecordingActivity.this, "Please select a group.", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        Record newRecord = new Record(AudioName, RecordId, RecordTime, url, SenderId, SendInGroupId);
-        recordHandle.addRecord(newRecord);
+            }
+        });
+
+
 
     }
+
+    private void submitRecord(Record newRecord) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Records").push();
+        String Rid=reference.getKey();
+        newRecord.setRecordId(Rid);
+        reference.setValue(newRecord).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(RecordingActivity.this,  "Record sent to "+group_text+" successfully!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(RecordingActivity.this, "Failed sending the record!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
+
+
     private String generateUniqueFileName() {
         // Implement your logic to generate a unique file name
         // You might want to use timestamps, UUIDs, or some other strategy

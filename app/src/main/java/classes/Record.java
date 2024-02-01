@@ -5,6 +5,9 @@ import java.util.ArrayList;
 public class Record {
     private String SendInGroupId, SenderId, url, RecordTime, RecordId , AudioName;
     private ArrayList<String> recipientOfTheMessage;
+    public Record(){
+        this.recipientOfTheMessage = new ArrayList<String>();
+    }
     public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId) {
         this.AudioName = AudioName;
         this.RecordId = RecordId;

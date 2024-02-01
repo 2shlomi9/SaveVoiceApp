@@ -149,6 +149,7 @@ public class registerActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
 //                                        FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
 //                                        user2.sendEmailVerification();
+                                        Toast.makeText(registerActivity.this, user.getuserName() + " registered successfully!", Toast.LENGTH_SHORT).show();
                                         Intent n = new Intent(getApplicationContext(),StartActivity.class);
                                         startActivity(n);
                                     } else {

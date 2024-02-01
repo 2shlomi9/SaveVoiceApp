@@ -53,5 +53,34 @@
             android:layout_weight="1"
             android:text="Send" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/group_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="150dp"
+        android:background="#30432E2E"
+        android:adjustViewBounds="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group filter: "
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/group_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:spinnerMode="dropdown"
+            android:textSize="20sp" />
+
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -24,21 +24,18 @@ public class AddGroupActivity extends AppCompatActivity {
     private EditText editTextGroupName;
     private Button buttonBack;
     private Button buttonSave;
-    private Group_handle groupHendle;
-    private User_handle userHandle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
 
-        groupHendle = new Group_handle(); // Assuming Group_handle has a default constructor
-        userHandle = new User_handle();
 
         editTextGroupName = findViewById(R.id.editTextGroupName);
         buttonBack = findViewById(R.id.buttonBack);
         buttonSave = findViewById(R.id.buttonSave);
-        userId = userHandle.getId();
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         initUI();
     }
     private void initUI() {
