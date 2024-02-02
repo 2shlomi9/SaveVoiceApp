@@ -190,13 +190,6 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
         }
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        if (mediaPlayer != null) {
-//            mediaPlayer.release();
-//        }
-//    }
 
 }
 
@@ -206,10 +199,6 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
 
 
 
-
-//
-
-//
 
 
 

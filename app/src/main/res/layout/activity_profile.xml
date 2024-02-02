@@ -39,6 +39,15 @@
             android:layout_below="@+id/tvUserName"
             android:text="userEmail">
         </TextView>
+        <Button
+            android:id="@+id/safeMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#6EA84F"
+            android:layout_below="@+id/tvEmail"
+            android:text="Safe Mode"
+            android:textColor="@color/colorWhite"
+            android:textSize="8dp" />
 
 
     <Button
@@ -52,6 +61,7 @@
         android:text="Log out"
         android:textColor="@color/colorWhite"
         android:textSize="8dp" />
+
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

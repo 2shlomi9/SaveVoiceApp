@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private Fragment selectorFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +44,12 @@ public class MainActivity extends AppCompatActivity {
                     return true; // Return true to prevent further processing
                 }
 
-//                if (selectorFragment != null) {
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectorFragment).commit();
-//                }
+
 
                 return true;
             }
         });
 
-//        Bundle intent = getIntent().getExtras();
-//        if (intent != null) {
-//            String profileId = intent.getString("publisherId");
-//
-//            getSharedPreferences("PROFILE", MODE_PRIVATE).edit().putString("profileId", profileId).apply();
-//
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-//            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
-//        } else {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//        }
+
     }
 }

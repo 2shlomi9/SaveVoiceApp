@@ -237,7 +237,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         RecordTime = formattedDateTime;
         url = audioUrl;
         SenderId = userId;
-        group_reference.addValueEventListener(new ValueEventListener() {
+        group_reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -392,93 +392,4 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
 
 
 
-//    @Override
-//    public void onClick(View v) {
-//        if (v == recordButton) {
-//            if (!isRecording) {
-//                if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-//                    requestRecordAudioPermission();
-//                } else {
-//                    startRecording();
-//                }
-//            }
-//        } else if (v == stopRecordingButton) {
-//            if (isRecording) {
-//                stopRecording();
-//            }
-//        }
-//    }
-//
-//    private void requestRecordAudioPermission() {
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                startRecording();
-//            } else {
-//                Toast.makeText(this, "Recording permission denied!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//    private void startRecording() {
-//        try {
-//            mediaRecorder = new MediaRecorder();
-//            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//            audioFile = getOutputFilePath();
-//            mediaRecorder.setOutputFile(audioFile);
-//            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-//            mediaRecorder.prepare();
-//            mediaRecorder.start();
-//            isRecording = true;
-//            Toast.makeText(this, "Recording started!", Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "Recording failed!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    private String getOutputFilePath() {
-//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-//        return storageDir.getAbsolutePath() + "/recording.mp3";
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        stopRecording();
-//    }
-//
-//    private void stopRecording() {
-//        if (mediaRecorder != null) {
-//            mediaRecorder.stop();
-//            mediaRecorder.release();
-//            mediaRecorder = null;
-//            isRecording = false;
-//            Toast.makeText(this, "Recording stopped!", Toast.LENGTH_SHORT).show();
-//
-//            // Upload the recorded audio file to Firebase Storage
-//            uploadAudioToFirebase();
-//        }
-//    }
-//
-//    private void uploadAudioToFirebase() {
-//        if (audioFile != null) {
-//            Uri fileUri = Uri.fromFile(new File(audioFile));
-//            StorageReference audioRef = storageReference.child("audio").child(fileUri.getLastPathSegment());
-//
-//            audioRef.putFile(fileUri)
-//                    .addOnSuccessListener(taskSnapshot -> {
-//                        Toast.makeText(AudioRecordingActivity.this, "Audio uploaded to Firebase Storage!", Toast.LENGTH_SHORT).show();
-//                    })
-//                    .addOnFailureListener(e -> {
-//                        Toast.makeText(AudioRecordingActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    });
-//        }
-//    }
 
