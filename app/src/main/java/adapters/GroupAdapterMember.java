@@ -205,17 +205,13 @@ public class GroupAdapterMember extends RecyclerView.Adapter<GroupAdapterMember.
         return list.size();
     }
 
-    public void createDialog() {
 
-    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         CardView group_btn;
         TextView title;
 
-        AlertDialog.Builder dinnerOptions;
-        AlertDialog options;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

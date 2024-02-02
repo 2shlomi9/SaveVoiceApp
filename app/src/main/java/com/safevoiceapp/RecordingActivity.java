@@ -328,7 +328,7 @@ public class RecordingActivity extends AppCompatActivity {
     }
 
     private void setupMediaRecorder() {
-        audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio.3gp";
+        audioFilePath = getExternalCacheDir().getAbsolutePath() + "/audio";
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -341,6 +341,7 @@ public class RecordingActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mediaRecorder.start();
     }
 
 //    private void sendAudioToFirebase() {
