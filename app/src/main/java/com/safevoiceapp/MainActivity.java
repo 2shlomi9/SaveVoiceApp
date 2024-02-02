@@ -28,13 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
-                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    startActivity(new Intent(MainActivity.this, HistoryActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_group) {
                     startActivity(new Intent(MainActivity.this, ManagerGroupActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_add) {// Start the activity outside of the switch statement
-                    startActivity(new Intent(MainActivity.this, RecordingActivity.class));
+                    startActivity(new Intent(MainActivity.this, AudioRecordingActivity.class));
                     return true; // Return true to prevent further processing
                 } else if (itemId == R.id.voice_chat) {
                     startActivity(new Intent(MainActivity.this, MemberGroupActivity.class));

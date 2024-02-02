@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/record_view"
+    android:id="@+id/record_player"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -11,19 +11,22 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#E5EEF1">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Record"
-            android:textColor="#024173"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnplay"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:contentDescription="Play Button"
+            android:src="@drawable/play_record_foreground" />
 
 
     </RelativeLayout>
+
+
 </androidx.cardview.widget.CardView>
+
+

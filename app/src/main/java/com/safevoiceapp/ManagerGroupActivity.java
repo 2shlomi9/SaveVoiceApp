@@ -33,7 +33,7 @@ import classes.User;
 public class ManagerGroupActivity extends AppCompatActivity {
 
     private ImageView createGroup;
-    private ArrayList<Group> managerrGroups;
+    private ArrayList<Group> managerGroups;
 
     private DatabaseReference group_reference, user_reference;
     private FirebaseUser fuser;
@@ -93,7 +93,7 @@ public class ManagerGroupActivity extends AppCompatActivity {
 
 
 
-        managerrGroups = new ArrayList<Group>();
+        managerGroups = new ArrayList<Group>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         Uid = fuser.getUid();
         createGroup = findViewById(R.id.btnCreateGroup);
@@ -105,7 +105,7 @@ public class ManagerGroupActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dialog_builder = new AlertDialog.Builder(this);
-        groupAdapter = new GroupAdapterManager(this, managerrGroups, dialog_builder);
+        groupAdapter = new GroupAdapterManager(this, managerGroups, dialog_builder);
         recyclerView.setAdapter(groupAdapter);
 
 
@@ -118,11 +118,11 @@ public class ManagerGroupActivity extends AppCompatActivity {
 
     }
     private void refresh_menagerGroupsData(DataSnapshot snapshot) {
-        managerrGroups.clear();
+        managerGroups.clear();
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Group group = dataSnapshot.getValue(Group.class);
             if(group.getManagerId().equals(Uid)) {
-                managerrGroups.add(group);
+                managerGroups.add(group);
             }
         }
 

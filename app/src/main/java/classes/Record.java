@@ -3,10 +3,11 @@ package classes;
 import java.util.ArrayList;
 
 public class Record {
-    private String SendInGroupId, SenderId, url, RecordTime, RecordId , AudioName;
-    private ArrayList<String> recipientOfTheMessage;
+    private String GroupId, SenderId, url, RecordTime, RecordId , AudioName;
+    private ArrayList<String> sent_users, delivered_users;
     public Record(){
-        this.recipientOfTheMessage = new ArrayList<String>();
+        this.sent_users = new ArrayList<String>();
+        this.delivered_users = new ArrayList<String>();
     }
     public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId) {
         this.AudioName = AudioName;
@@ -14,33 +15,35 @@ public class Record {
         this.RecordTime = RecordTime;
         this.url = url;
         this.SenderId = SenderId;
-        this.SendInGroupId = SendInGroupId;
-        this.recipientOfTheMessage = new ArrayList<String>();
+        this.GroupId = SendInGroupId;
+        this.sent_users = new ArrayList<String>();
+        this.delivered_users = new ArrayList<String>();
     }
-    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId, ArrayList<String> recipientOfTheMessage) {
+    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId,ArrayList<String> sent_users,ArrayList<String>  delivered_users) {
         this.AudioName = AudioName;
         this.RecordId = RecordId;
         this.RecordTime = RecordTime;
         this.url = url;
         this.SenderId = SenderId;
-        this.SendInGroupId = SendInGroupId;
-        this.recipientOfTheMessage = recipientOfTheMessage;
+        this.GroupId = SendInGroupId;
+        this.sent_users = sent_users;
+        this.delivered_users = delivered_users;
     }
 
-    public String getSendInGroupId() {
-        return SendInGroupId;
+    public String getGroupId() {
+        return GroupId;
     }
 
-    public void setSendInGroupId(String sendInGroupId) {
-        SendInGroupId = sendInGroupId;
+    public void setGroupId(String groupId) {
+        this.GroupId = groupId;
     }
 
     public String getSenderId() {
-        return SenderId;
+        return this.SenderId;
     }
 
     public void setSenderId(String senderId) {
-        SenderId = senderId;
+        this.SenderId = senderId;
     }
 
     public String getUrl() {
@@ -52,54 +55,77 @@ public class Record {
     }
 
     public String getRecordTime() {
-        return RecordTime;
+        return this.RecordTime;
     }
 
     public void setRecordTime(String recordTime) {
-        RecordTime = recordTime;
+        this.RecordTime = recordTime;
     }
 
     public String getRecordId() {
-        return RecordId;
+        return this.RecordId;
     }
 
     public void setRecordId(String recordId) {
-        RecordId = recordId;
+        this.RecordId = recordId;
     }
 
     public String getAudioName() {
-        return AudioName;
+        return this.AudioName;
     }
 
     public void setAudioName(String audioName) {
-        AudioName = audioName;
+        this.AudioName = audioName;
     }
 
-    public ArrayList<String> getRecipientOfTheMessage() {
-        return recipientOfTheMessage;
+    public ArrayList<String> getDelivered_users() {
+        return this.delivered_users;
     }
 
-    public void setRecipientOfTheMessage(ArrayList<String> recipientOfTheMessage) {
-        this.recipientOfTheMessage = recipientOfTheMessage;
+    public void setDelivered_users(ArrayList<String> delivered_users) {
+        this.delivered_users = delivered_users;
     }
-    public boolean IsExistInMember(String idGetrs){
-        if (this.recipientOfTheMessage.contains(idGetrs)){
+    public ArrayList<String> getSent_users() {
+        return this.sent_users;
+    }
+
+    public void setSent_users(ArrayList<String> sent_users) {
+        this.sent_users = sent_users;
+    }
+    public boolean is_sent_to_user(String idGetrs){
+        return this.sent_users.contains(idGetrs);
+    }
+    public boolean is_delivered_to_user(String idGetrs){
+        return this.delivered_users.contains(idGetrs);
+    }
+    public boolean send_to_user(String uid){
+        if(!this.is_sent_to_user(uid)) {
+            this.sent_users.add(uid);
             return true;
-        }else{
+        }
+        return false;
+    }
+
+    public boolean deliver_to_user(String uid){
+        if(!this.is_sent_to_user(uid)||this.is_delivered_to_user(uid)) {
             return false;
         }
+        this.sent_users.remove(uid);
+        this.delivered_users.add(uid);
+        return true;
     }
 
     @Override
     public String toString() {
         return "Record{" +
-                "SendInGroupId='" + SendInGroupId + '\'' +
+                "SendInGroupId='" + GroupId + '\'' +
                 ", SenderId='" + SenderId + '\'' +
                 ", url='" + url + '\'' +
                 ", RecordTime='" + RecordTime + '\'' +
                 ", RecordId='" + RecordId + '\'' +
                 ", AudioName='" + AudioName + '\'' +
-                ", recipientOfTheMessage=" + recipientOfTheMessage.toString() +
+                ", sent users=" + sent_users.toString() + '\n'+
+                ", delivered users=" + delivered_users.toString() +
                 '}';
     }
 }

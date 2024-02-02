@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecordingActivity">
+    tools:context=".AudioRecordingActivity">
 
     <ImageView
         android:id="@+id/btnRecord"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
+        android:src="@drawable/ic_record_circle"
         android:clickable="true"
-        android:contentDescription="Record Button"
-        android:src="@drawable/ic_record_circle" />
+        android:contentDescription="Record Button"/>
 
     <TextView
         android:id="@+id/tvRecordingDuration"
@@ -39,12 +40,19 @@
             android:layout_weight="1"
             android:text="Delete" />
 
+<!--        <Button-->
+<!--            android:id="@+id/btnListenAgain"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Listen Again" />-->
         <Button
-            android:id="@+id/btnListenAgain"
+            android:id="@+id/btnStopRecording"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Listen Again" />
+            android:text="Stop" />
+
 
         <Button
             android:id="@+id/btnSend"

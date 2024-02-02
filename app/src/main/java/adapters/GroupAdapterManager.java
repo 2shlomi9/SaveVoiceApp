@@ -248,8 +248,6 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
         CardView group_btn;
         TextView title;
 
-        AlertDialog.Builder dinnerOptions;
-        AlertDialog options;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

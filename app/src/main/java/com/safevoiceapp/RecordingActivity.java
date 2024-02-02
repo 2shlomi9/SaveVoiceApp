@@ -77,13 +77,13 @@ public class RecordingActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DatabaseReference user_reference, group_reference, record_reference;
-    private CollectionReference collectionRef;
     private Spinner group_select;
     private ArrayList<String> managerGroups_id,managerGroups_names ;
     private String group_text,groupIdToSend, Uid;
 
     private List<String> geters;
-    private Record_handle recordHandle;
+
+
 
 
 
@@ -98,7 +98,6 @@ public class RecordingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recording);
         managerGroups_id = new ArrayList<String>();
         managerGroups_names = new ArrayList<String>();
-        recordHandle = new Record_handle(); // Assuming Group_handle has a default constructor
         user_reference = FirebaseDatabase.getInstance().getReference("Users");
         group_reference = FirebaseDatabase.getInstance().getReference("Groups");
         record_reference = FirebaseDatabase.getInstance().getReference("Records");
@@ -344,38 +343,73 @@ public class RecordingActivity extends AppCompatActivity {
         }
     }
 
-    private void sendAudioToFirebase() {
-        if (audioFilePath != null) {
-            // Create a reference to the audio file in Firebase Storage
-            StorageReference audioRef = storageRef.child("audio/" + System.currentTimeMillis() + ".mp3");
+//    private void sendAudioToFirebase() {
+//        if (audioFilePath != null) {
+//            // Create a reference to the audio file in Firebase Storage
+//            StorageReference audioRef = storageRef.child("audio/" + System.currentTimeMillis() + ".mp3");
+//
+//            // Create Uri for the local audio file
+//            Uri audioFileUri = Uri.fromFile(new File(audioFilePath));
+//
+//            // Upload file to Firebase Storage
+//            audioRef.putFile(audioFileUri)
+//                    .addOnSuccessListener(taskSnapshot -> {
+//                        // File successfully uploaded
+//                        // Get the download URL of the uploaded file
+//                        audioRef.getDownloadUrl().addOnSuccessListener(uri -> {
+//                            // uri is the download URL of the uploaded audio file
+//                            audioUrl = uri.toString();
+//                            // Now you can use audioUrl as needed
+//                            Toast.makeText(RecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
+//
+//                            // You can pass the audioUrl to any method or store it for later use
+//                            // Example: saveAudioUrl(audioUrl);
+//                        });
+//                    })
+//                    .addOnFailureListener(e -> {
+//                        // Handle the failure
+//                        Toast.makeText(RecordingActivity.this, "Failed to send recording: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    });
+//        } else {
+//            Toast.makeText(this, "No recording available to send", Toast.LENGTH_SHORT).show();
+//        }
+//        saveRecordsInFirebase(audioUrl);
+//    }
+private void sendAudioToFirebase() {
+    if (audioFilePath != null) {
+        // Create a reference to the audio file in Firebase Storage
+        StorageReference audioRef = storageRef.child("audio/" + System.currentTimeMillis() + ".mp3");
 
-            // Create Uri for the local audio file
-            Uri audioFileUri = Uri.fromFile(new File(audioFilePath));
+        // Create Uri for the local audio file
+        Uri audioFileUri = Uri.fromFile(new File(audioFilePath));
 
-            // Upload file to Firebase Storage
-            audioRef.putFile(audioFileUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // File successfully uploaded
-                        // Get the download URL of the uploaded file
-                        audioRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // uri is the download URL of the uploaded audio file
-                            audioUrl = uri.toString();
-                            // Now you can use audioUrl as needed
-                            Toast.makeText(RecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
+        // Upload file to Firebase Storage
+        audioRef.putFile(audioFileUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // File successfully uploaded
+                    // Get the download URL of the uploaded file
+                    audioRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        // uri is the download URL of the uploaded audio file
+                        audioUrl = uri.toString();
+                        // Now you can use audioUrl as needed
+                        Toast.makeText(RecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
 
-                            // You can pass the audioUrl to any method or store it for later use
-                            // Example: saveAudioUrl(audioUrl);
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle the failure
-                        Toast.makeText(RecordingActivity.this, "Failed to send recording: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        // You can pass the audioUrl to any method or store it for later use
+                        // Example: saveAudioUrl(audioUrl);
+
+                        // Save the record in Firebase after getting the audioUrl
+                        saveRecordsInFirebase(audioUrl);
                     });
-        } else {
-            Toast.makeText(this, "No recording available to send", Toast.LENGTH_SHORT).show();
-        }
-        saveRecordsInFirebase(audioUrl);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the failure
+                    Toast.makeText(RecordingActivity.this, "Failed to send recording: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    } else {
+        Toast.makeText(this, "No recording available to send", Toast.LENGTH_SHORT).show();
     }
+}
+
 
 
     @Override
@@ -414,10 +448,13 @@ public class RecordingActivity extends AppCompatActivity {
                 Boolean flag = true;
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Group group = dataSnapshot.getValue(Group.class);
-                    if(group.getGroupName().equals(group_text)) {
+                    if(group.getGroupName().equals(group_text) && group.getManagerId().equals(SenderId)) {
                         flag =false;
                         String groupId = group.getGroupId();
-                        Record newRecord = new Record(AudioName, RecordId, RecordTime, url, SenderId, groupId);
+                        Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId);
+                        for(String uid:group.getMembers()) {
+                            newRecord.send_to_user(uid);
+                        }
                         submitRecord(newRecord);
                     }
                 }
@@ -457,7 +494,7 @@ public class RecordingActivity extends AppCompatActivity {
     private String generateUniqueFileName() {
         // Implement your logic to generate a unique file name
         // You might want to use timestamps, UUIDs, or some other strategy
-        return "audio_" + System.currentTimeMillis() + ".mp3";
+        return  System.currentTimeMillis() + ".mp3";
     }
     public static String generateRecordId() {
         // Generate a random UUID
