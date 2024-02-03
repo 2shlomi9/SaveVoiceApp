@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -27,7 +28,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 import classes.Group;
 import classes.Record;
@@ -66,12 +72,25 @@ public class MediaPlayerActivity extends AppCompatActivity {
     private DatabaseReference user_reference, group_reference, record_reference;
     private Spinner group_select;
     private ArrayList<String> managerGroups_id, managerGroups_names;
-    private String group_text, groupIdToSend, Uid;
+    private String group_text, groupIdToSend, Uid, enterDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_player);
+        LocalDateTime currentDateTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentDateTime = LocalDateTime.now();
+        }
+        DateTimeFormatter formatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        }
+        enterDate = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            enterDate = currentDateTime.format(formatter);
+        }
         record_reference = FirebaseDatabase.getInstance().getReference("Records");
         Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         playButton = findViewById(R.id.playButton);
@@ -105,7 +124,8 @@ public class MediaPlayerActivity extends AppCompatActivity {
     public void startBurstRecording(DataSnapshot snapshot){
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Record record = dataSnapshot.getValue(Record.class);
-            if (record.is_sent_to_user(Uid)) {
+            if (record.is_sent_to_user(Uid) &&isDateAfter(record.getRecordTime(), enterDate)) {
+
                 playAudioFromUrl(record.getUrl());
                 record.deliver_to_user(Uid);
                 record_reference.child(record.getRecordId()).setValue(record);
@@ -124,6 +144,23 @@ public class MediaPlayerActivity extends AppCompatActivity {
                 .build();
 
         mediaPlayer.setAudioAttributes(audioAttributes);
+    }
+    public static boolean isDateAfter(String recDate,String enterDate) {
+        // Parse the string date into a Date object
+        Date firstDate = null;
+        Date secondDate = null;
+
+        try {
+            firstDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(recDate);
+            secondDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(enterDate);
+        } catch (ParseException e) {
+            System.err.println("Error parsing date string: " + e.getMessage());
+            return false;
+        }
+        if (firstDate.before(secondDate))
+            return false;
+        else
+            return true;
     }
 
     // Play audio from the given URL

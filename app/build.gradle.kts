@@ -49,6 +49,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.10.1")
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation ("com.google.firebase:firebase-functions:20.4.0")
+    implementation ("androidx.appcompat:appcompat:1.3.0")
 
 
 

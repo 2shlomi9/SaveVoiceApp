@@ -3,6 +3,8 @@ package com.safevoiceapp;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +34,8 @@ public class registerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView loginUser;
 
+    private CheckBox show_pass;
+
 
 
 
@@ -52,6 +56,7 @@ public class registerActivity extends AppCompatActivity {
         passwordTextView = findViewById(R.id.password);
         btnRegister = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
+        show_pass = findViewById(R.id.show_pass);
         initUI();
 
     }
@@ -71,6 +76,19 @@ public class registerActivity extends AppCompatActivity {
                 registerNewUser();
             }
         });
+        //set show pass
+        show_pass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Handle checkbox state changes here
+                if (isChecked) {
+                    passwordTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+                } else {
+                    passwordTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+        //......................................................................................
     }
 
 

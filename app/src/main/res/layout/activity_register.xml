@@ -57,7 +57,18 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/edit_text_background"
         android:hint="Password"
+        android:inputType="textPassword"
         android:padding="10dp" />
+    <CheckBox
+        android:id="@+id/show_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password"
+        android:layout_marginLeft="10dp"
+        android:text="Show"
+        android:textColor="#674242"
+        android:checked="false"
+        android:textSize="20dp" />
 
     <Button
         android:id="@+id/register"

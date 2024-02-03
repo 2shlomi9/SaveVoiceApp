@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -78,6 +79,7 @@ public class RecordingActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DatabaseReference user_reference, group_reference, record_reference;
     private Spinner group_select;
+    private EditText messageEt;
     private ArrayList<String> managerGroups_id,managerGroups_names ;
     private String group_text,groupIdToSend, Uid;
 
@@ -110,6 +112,7 @@ public class RecordingActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.btnDelete);
         listenAgainButton = findViewById(R.id.btnListenAgain);
         sendButton = findViewById(R.id.btnSend);
+        messageEt = findViewById(R.id.messageEt);
         group_reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -187,6 +190,7 @@ public class RecordingActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messageEt.setText("");
                 deleteRecording();
             }
         });
@@ -202,6 +206,7 @@ public class RecordingActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messageEt.setText("");
                 sendAudioToFirebase();
             }
         });
@@ -436,11 +441,12 @@ private void sendAudioToFirebase() {
             formattedDateTime = currentDateTime.format(formatter);
         }
 
-        String AudioName, RecordId, RecordTime, url, SenderId;
+        String AudioName, RecordId, RecordTime, url, SenderId, message;
         AudioName = generateUniqueFileName();
         RecordId = generateRecordId();
         RecordTime = formattedDateTime;
         url = audioUrl;
+        message = messageEt.getText().toString();
         SenderId = userId;
         group_reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -452,7 +458,7 @@ private void sendAudioToFirebase() {
                     if(group.getGroupName().equals(group_text) && group.getManagerId().equals(SenderId)) {
                         flag =false;
                         String groupId = group.getGroupId();
-                        Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId);
+                        Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId, message);
                         for(String uid:group.getMembers()) {
                             newRecord.send_to_user(uid);
                         }

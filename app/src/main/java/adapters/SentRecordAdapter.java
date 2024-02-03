@@ -94,7 +94,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
     @Override
     public void onBindViewHolder(@NonNull SentRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getRecordId());
+        holder.title.setText(record.getMessage());
 
         DatabaseReference record_reference = FirebaseDatabase.getInstance().getReference("Records");
         final String[] Rid = new String[1];

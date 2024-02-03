@@ -95,7 +95,7 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
     @Override
     public void onBindViewHolder(@NonNull ReceiveRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getRecordId());
+        holder.title.setText(record.getMessage());
         if(record.is_delivered_to_user(Uid))
             holder.title.setBackgroundColor(R.color.green);
         DatabaseReference record_reference = FirebaseDatabase.getInstance().getReference("Records");

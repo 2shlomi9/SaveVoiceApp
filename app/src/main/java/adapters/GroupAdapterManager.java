@@ -172,29 +172,31 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
                                         userId = user.getUid();
                                     }
                                 }
+                                if(userId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                    Toast.makeText(context, "You can't invite yourself to the group.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 if(group.getMembers().contains(userId)){
                                     Toast.makeText(context, userName+" already member in "+group.getGroupName(), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                else if(userId.equals("")){
+                                if(userId.equals("")){
                                     Toast.makeText(context, userName+" is not exists.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                else{
-                                    group.addMembers(userId);
-                                    group_reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            group_reference.child(group.getGroupId()).setValue(group);
-                                            Toast.makeText(context.getApplicationContext(), "The invitation sent to "+userName + " successfully!", Toast.LENGTH_SHORT).show();
-                                            userInviteTxt.setText("");
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            System.out.println("Failed.");
-                                        }
-                                    });
-                                }
+                                group.addMembers(userId);
+                                group_reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        group_reference.child(group.getGroupId()).setValue(group);
+                                        Toast.makeText(context.getApplicationContext(), "The invitation sent to "+userName + " successfully!", Toast.LENGTH_SHORT).show();
+                                        userInviteTxt.setText("");
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        System.out.println("Failed.");
+                                    }
+                                });
                             }
 
                             @Override

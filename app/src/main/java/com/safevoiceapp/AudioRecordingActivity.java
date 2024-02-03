@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -82,6 +83,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DatabaseReference user_reference, group_reference, record_reference;
     private Spinner group_select;
+    private EditText messageEt;
     private ArrayList<String> managerGroups_id, managerGroups_names;
     private String group_text, groupIdToSend, Uid;
 
@@ -100,6 +102,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         recordButton.setOnClickListener(this);
         recordingDuration = findViewById(R.id.tvRecordingDuration);
         deleteButton = findViewById(R.id.btnDelete);
+        messageEt = findViewById(R.id.messageEt);
         listenAgainButton = findViewById(R.id.btnListenAgain);
         sendButton = findViewById(R.id.btnSend);
         managerGroups_id = new ArrayList<String>();
@@ -188,6 +191,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messageEt.setText("");
                 //deleteRecording();
             }
         });
@@ -202,6 +206,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messageEt.setText("");
                 uploadAudioToFirebase();
             }
         });
@@ -231,12 +236,13 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             formattedDateTime = currentDateTime.format(formatter);
         }
 
-        String AudioName, RecordId, RecordTime, url, SenderId;
+        String AudioName, RecordId, RecordTime, url, SenderId, message;
         AudioName = generateUniqueFileName();
         RecordId = generateRecordId();
         RecordTime = formattedDateTime;
         url = audioUrl;
         SenderId = userId;
+        message = messageEt.getText().toString();
         group_reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -247,7 +253,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
                     if (group.getGroupName().equals(group_text) && group.getManagerId().equals(SenderId)) {
                         flag = false;
                         String groupId = group.getGroupId();
-                        Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId);
+                        Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId, message);
                         for (String uid : group.getMembers()) {
                             newRecord.send_to_user(uid);
                         }

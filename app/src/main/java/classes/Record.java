@@ -3,23 +3,25 @@ package classes;
 import java.util.ArrayList;
 
 public class Record {
-    private String GroupId, SenderId, url, RecordTime, RecordId , AudioName;
+    private String GroupId, SenderId, url, RecordTime, RecordId , AudioName, message;
     private ArrayList<String> sent_users, delivered_users;
     public Record(){
         this.sent_users = new ArrayList<String>();
         this.delivered_users = new ArrayList<String>();
+        this.message ="You got a record!";
     }
-    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId) {
+    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId, String message) {
         this.AudioName = AudioName;
         this.RecordId = RecordId;
         this.RecordTime = RecordTime;
         this.url = url;
         this.SenderId = SenderId;
         this.GroupId = SendInGroupId;
+        this.message = message;
         this.sent_users = new ArrayList<String>();
         this.delivered_users = new ArrayList<String>();
     }
-    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId,ArrayList<String> sent_users,ArrayList<String>  delivered_users) {
+    public Record(String AudioName, String RecordId, String RecordTime, String url, String SenderId, String SendInGroupId, String message, ArrayList<String> sent_users,ArrayList<String>  delivered_users) {
         this.AudioName = AudioName;
         this.RecordId = RecordId;
         this.RecordTime = RecordTime;
@@ -27,6 +29,7 @@ public class Record {
         this.SenderId = SenderId;
         this.GroupId = SendInGroupId;
         this.sent_users = sent_users;
+        this.message = message;
         this.delivered_users = delivered_users;
     }
 
@@ -76,6 +79,14 @@ public class Record {
 
     public void setAudioName(String audioName) {
         this.AudioName = audioName;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public ArrayList<String> getDelivered_users() {

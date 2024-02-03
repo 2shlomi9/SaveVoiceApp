@@ -21,7 +21,7 @@ import classes.Group;
 public class AddGroupActivity extends AppCompatActivity {
 
     private String userId;
-    private EditText editTextGroupName;
+    private EditText editTextGroupName, editTextDescription;
     private Button buttonBack;
     private Button buttonSave;
 
@@ -31,8 +31,8 @@ public class AddGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
 
-
         editTextGroupName = findViewById(R.id.editTextGroupName);
+        editTextDescription = findViewById(R.id.editTextGroupDescription);
         buttonBack = findViewById(R.id.buttonBack);
         buttonSave = findViewById(R.id.buttonSave);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -58,12 +58,13 @@ public class AddGroupActivity extends AppCompatActivity {
     }
 
     private void createGroup() {
-        String groupName, groupId,managerId;
+        String groupName, groupId,managerId,description;
         groupName = editTextGroupName.getText().toString().trim();
+        description = editTextDescription.getText().toString().trim();
         managerId = userId;
         if (!groupName.isEmpty()) {
             groupId = "";
-            Group newGroup = new Group(groupName, groupId, managerId);
+            Group newGroup = new Group(groupName, groupId, managerId, description);
             submitGroup(newGroup);
         }
     }

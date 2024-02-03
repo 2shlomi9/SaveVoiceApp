@@ -24,11 +24,20 @@
         android:text="00:00"
         android:textSize="18sp"
         android:textStyle="bold" />
+    <EditText
+        android:id="@+id/messageEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_background"
+        android:hint="message"
+        android:layout_below="@id/tvRecordingDuration"
+        android:padding="10dp"
+        android:autofillHints="" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvRecordingDuration"
+        android:layout_below="@id/messageEt"
         android:layout_marginTop="16dp"
         android:orientation="horizontal">
 

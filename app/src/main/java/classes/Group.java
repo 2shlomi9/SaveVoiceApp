@@ -11,20 +11,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class Group {
-    private String groupName, groupId, managerId;
+    private String groupName, groupId, managerId, description;
     private ArrayList<String> members;
 
 
-    public Group(String groupName, String groupId, String managerId,ArrayList<String> members) {
+    public Group(String groupName, String groupId, String managerId, String description,ArrayList<String> members) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.managerId = managerId;
         this.members = members;
+        this.description = description;
     }
-    public Group(String groupName, String groupId, String managerId) {
+    public Group(String groupName, String groupId, String managerId, String description) {
         this.groupName = groupName;
         this.groupId = groupId;
         this.managerId = managerId;
+        this.description = description;
         this.members = new ArrayList<String>();
     }
     public Group() {
@@ -67,6 +69,13 @@ public class Group {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getManagerId() {
