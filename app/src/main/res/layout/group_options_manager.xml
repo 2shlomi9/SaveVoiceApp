@@ -9,103 +9,221 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp">
 
+
+
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cardBackground">
 
-        <TextView
-            android:id="@+id/tvTitle"
+
+
+        <RelativeLayout
+            android:id="@+id/msgToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Group"
-            android:textColor="#024173"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_height="50dp"
+            android:background="@color/Blue">
 
-        <LinearLayout
-            android:id="@+id/InviteLn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/tvTitle"
-            android:orientation="horizontal">
-            <EditText
-                android:id="@+id/etUserName"
-                android:layout_width="250dp"
-                android:layout_height="35dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="Username" />
-
-
-            <Button
-                android:id="@+id/Invite"
+            <ImageView
+                android:id="@+id/backBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#30432E2E"
-                android:text="Invite"
-                android:textColor="#250E0E"
-                android:textColorHint="#250E0E"
-                android:textSize="10dp" />
-
-
-        </LinearLayout>
-
-
-
-
-
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/InviteLn"
-            android:orientation="vertical">
-
-
-            <Button
-                android:id="@+id/editGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#30432E2E"
-                android:text="Edit group"
-                android:textColor="#250E0E"
-                android:textColorHint="#250E0E"
-                android:textSize="10dp" />
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_back"
+                app:tint="@color/colorAccent" />
             <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Group Name"
+                android:textColor="@color/black"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:padding="8dp"
+                android:scrollbars="horizontal" />
+
+
+            <!--            <androidx.coordinatorlayout.widget.CoordinatorLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_centerInParent="true">-->
+
+            <!--                <de.hdodenhof.circleimageview.CircleImageView-->
+            <!--                    android:id="@+id/msgImage"-->
+            <!--                    imageUrl="@{image}"-->
+            <!--                    android:layout_width="35dp"-->
+            <!--                    android:layout_height="35dp"-->
+            <!--                    android:layout_margin="10dp"-->
+            <!--                    android:src="@drawable/ic_launcher_background" />-->
+
+            <!--                <ImageView-->
+            <!--                    android:id="@+id/msgOnlineStatus"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:src="@{status.equals(`online`)? @drawable/ic_online:@drawable/ic_offline}"-->
+            <!--                    app:layout_anchor="@id/msgImage"-->
+            <!--                    app:layout_anchorGravity="end|center" />-->
+
+            <!--            </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+
+            <ImageView
+                android:id="@+id/groupInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Participants: "
-                android:textColor="@color/colorBlack"
-                android:layout_marginRight="50dp"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_info"
+                app:tint="@color/colorAccent" />
+        </RelativeLayout>
 
-            <Spinner
-                android:id="@+id/tvMembers"
-                android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recordsList"
+            android:layout_above="@+id/editRecord"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/msgToolbar" />
+
+<!--        <com.airbnb.lottie.LottieAnimationView-->
+<!--            android:id="@+id/typingStatus"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_above="@id/msgData"-->
+<!--            android:layout_marginStart="5dp"-->
+<!--            android:visibility="invisible"-->
+<!--            app:lottie_autoPlay="true"-->
+<!--            app:lottie_loop="true"-->
+<!--            app:lottie_rawRes="@raw/typing_animation"-->
+<!--            app:lottie_repeatCount="50" />-->
+
+        <LinearLayout
+            android:id="@+id/msgData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/messageLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="None"
-                android:textColor="@color/colorBlack"
-                android:textSize="20sp" />
+                android:layout_weight="1.8"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
 
-            <Button
-                android:id="@+id/deleteGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <EditText
+                    android:id="@+id/msgText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/message_edittext_background"
+                    android:hint="Write message.."
+                    android:inputType="textMultiLine"
+                    android:padding="8dp"
+                    android:scrollbars="vertical" />
 
-                android:backgroundTint="#30432E2E"
-                android:text="Delete Group"
-                android:textColor="#250E0E"
-                android:textColorHint="#250E0E"
-                android:textSize="10dp" />
+            </LinearLayout>
+
+<!--            <Button-->
+<!--                android:id="@+id/recordView"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1.8"-->
+<!--                android:visibility="gone"-->
+<!--                app:slide_to_cancel_arrow="@drawable/recv_ic_arrow"-->
+<!--                app:slide_to_cancel_arrow_color="@color/black"-->
+<!--                app:slide_to_cancel_text="Slide to cancel" />-->
+
+
+<!--            <ImageView-->
+<!--                android:id="@+id/btnSendMassage"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="38dp"-->
+<!--                android:layout_gravity="center|bottom"-->
+<!--                android:layout_marginEnd="5dp"-->
+<!--                android:layout_weight=".2"-->
+<!--                android:src="@drawable/ic_send"-->
+<!--                android:visibility="gone" />-->
+
+            <ImageView
+                android:id="@+id/btnRecord"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginEnd="5dp"
+                android:layout_weight=".2"
+                android:background="@drawable/mic_background"
+                android:scaleType="center"
+                android:src="@drawable/ic_mic"
+                app:tint="@color/colorAccent" />
+
+
 
         </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/editRecord"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:visibility="gone"
+            android:layout_above="@id/msgData">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Delete" />
+
+                <Button
+                    android:id="@+id/btnListenAgain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Listen Again" />
+
+                <Button
+                    android:id="@+id/btnSend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Send" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <!--Circular reveal media selection layout-->
+
+        <!--        <RelativeLayout-->
+        <!--            android:id="@+id/dataLayout"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_above="@id/msgData"-->
+        <!--            android:layout_marginHorizontal="15dp"-->
+        <!--            android:layout_marginBottom="10dp"-->
+        <!--            android:background="@drawable/picker_background"-->
+        <!--            android:padding="25dp"-->
+        <!--            android:visibility="gone">-->
+
+
+        <!--        </RelativeLayout>-->
+
     </RelativeLayout>
 
-
-</androidx.cardview.widget.CardView>
-
-
+</androidx.cardview.widget.CardView >

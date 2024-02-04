@@ -99,6 +99,9 @@ public class GroupAdapterMember extends RecyclerView.Adapter<GroupAdapterMember.
                 members = contactPopupView.findViewById(R.id.tvMembers);
                 managertxt = contactPopupView.findViewById(R.id.managerIdTv);
 
+
+
+
                 //set title
                 title.setText(group.getGroupName());
 
@@ -160,6 +163,7 @@ public class GroupAdapterMember extends RecyclerView.Adapter<GroupAdapterMember.
 
                     }
                 });
+
 
 
 

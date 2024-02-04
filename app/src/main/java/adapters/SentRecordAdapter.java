@@ -24,9 +24,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.database.ValueEventListener;
 import com.safevoiceapp.R;
 
 import java.io.IOException;
@@ -38,6 +41,7 @@ import java.util.List;
 
 
 import classes.Record;
+import classes.User;
 
 public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.MyViewHolder> {
 
@@ -51,11 +55,13 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
 
     //    private FirebaseStorage storage;
 //    private StorageReference storageReference;
-    public static String currUid;
+    public static String Uid;
+    private TextView Read_receipts;
 
     private DatabaseReference group_reference, user_reference , records_reference;
-    Bitmap bitmap;
     private List<String> sent_records;
+    private ArrayList<String> deliveredUser;
+    private String readList;
 
 
 
@@ -67,13 +73,13 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
         this.context = context;
         this.list = list;
         this.records_reference = FirebaseDatabase.getInstance().getReference("Records");
-        this.currUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        this.user_reference = FirebaseDatabase.getInstance().getReference("Users");
+        this.Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.sent_records = new ArrayList<String>();
         this.recordOptions = recordOptions;
-     //   this.sent_records.add( new Record("asasdad","asdas","asdasd","asdd","asdas","asd"));
-
         this.options = options;
         mediaPlayer = new MediaPlayer();
+        readList = "";
 
         // Set the audio attributes for the media player (for API level 21 and above)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -94,23 +100,37 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
     @Override
     public void onBindViewHolder(@NonNull SentRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getMessage());
-
-        DatabaseReference record_reference = FirebaseDatabase.getInstance().getReference("Records");
+        holder.title.setText(record.getGroupId());
         final String[] Rid = new String[1];
 
         // Set record button
         holder.record_btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                currUid=record.getRecordId();
+
+                String recId=record.getRecordId();
                 String URL =record.getUrl();
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View contactPopupView = inflater.inflate(R.layout.record_player, null);
-
                 playButton = contactPopupView.findViewById(R.id.btnplay);
+                Read_receipts = contactPopupView.findViewById(R.id.txtReaders);
+                for (String id : record.getDelivered_users()){
+                    user_reference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            readList += user.getFullName() + " \n";
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
+                        }
+                    });
+                }
+
+                Read_receipts.setText(readList);
                 playButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         google()
     }
 
+
 }
 
 rootProject.name = "SafeVoiceApp"

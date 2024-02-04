@@ -2,19 +2,21 @@ package com.safevoiceapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,21 +37,26 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import org.checkerframework.checker.units.qual.A;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+
+import java.util.ArrayList;
+
+import adapters.SentRecordAdapter;
+import classes.Record;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import classes.Group;
-import android.net.Uri;
-import classes.Record;
+import classes.User;
+
 
 public class AudioRecordingActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -57,6 +64,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
     private MediaRecorder mediaRecorder;
     private String audioFile = null;
+
     private boolean isRecording = false;
     private Button stopRecordingButton;
 
@@ -68,8 +76,9 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
 
     private String audioFilePath;
 
-    private ImageView recordButton;
-    private TextView recordingDuration;
+    private ImageView recordButton , groupInfo;
+    private TextView groupTitle;
+    private RelativeLayout editRecord;
 
     private Button deleteButton;
     private Button listenAgainButton;
@@ -81,39 +90,81 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
     private FirebaseUser currentUser;
     private FirebaseStorage storage;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference user_reference, group_reference, record_reference;
-    private Spinner group_select;
+    private DatabaseReference ureference, group_reference, record_reference;
     private EditText messageEt;
     private ArrayList<String> managerGroups_id, managerGroups_names;
-    private String group_text, groupIdToSend, Uid;
+    private String groupId,groupName, Uid;
+    private SentRecordAdapter sent_record_adapter;
+    private RecyclerView recyclerView;
+    private AlertDialog.Builder dialog_builder;
+    private ArrayList<Record> sent_records;
+    private Context context = this;
+    ArrayList<Group> list;
 
-    private List<String> geters;
+    //    private FirebaseStorage storage;
+//    private StorageReference storageReference;
+    public static String currUid;
+    private AlertDialog.Builder groupOptions;
+    private AlertDialog options;
+    private DatabaseReference user_reference;
+    String participantstr = "";
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_recording);
+        setContentView(R.layout.group_options_manager);
 
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        groupTitle = findViewById(R.id.tvTitle);
         recordButton = findViewById(R.id.btnRecord);
         recordButton.setOnClickListener(this);
-        recordingDuration = findViewById(R.id.tvRecordingDuration);
+        editRecord = findViewById(R.id.editRecord);
+        // recordingDuration = findViewById(R.id.tvRecordingDuration);
         deleteButton = findViewById(R.id.btnDelete);
-        messageEt = findViewById(R.id.messageEt);
+        groupInfo = findViewById(R.id.groupInfo);
+        messageEt = findViewById(R.id.msgText);
         listenAgainButton = findViewById(R.id.btnListenAgain);
         sendButton = findViewById(R.id.btnSend);
         managerGroups_id = new ArrayList<String>();
         managerGroups_names = new ArrayList<String>();
-        user_reference = FirebaseDatabase.getInstance().getReference("Users");
+        ureference = FirebaseDatabase.getInstance().getReference("Users");
         group_reference = FirebaseDatabase.getInstance().getReference("Groups");
         record_reference = FirebaseDatabase.getInstance().getReference("Records");
         auth = FirebaseAuth.getInstance();
         Uid = auth.getCurrentUser().getUid();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+
+        Intent intent = getIntent();
+        groupId = intent.getStringExtra("Group_ID");
+        groupName = intent.getStringExtra("Group_NAME");
+        //set records list
+        sent_records = new ArrayList<Record>();
+        record_reference = FirebaseDatabase.getInstance().getReference("Records");
+        recyclerView = findViewById(R.id.recordsList);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        dialog_builder = new AlertDialog.Builder(this);
+        sent_record_adapter = new SentRecordAdapter(this, sent_records, dialog_builder);
+
+        groupTitle.setText(groupName);
+        groupInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context , ManagerGroupInfoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("Group_ID", groupId);
+                intent.putExtra("Group_NAME", groupName);
+                context.startActivity(intent);
+
+            }
+        });
 
         group_reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -128,27 +179,27 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             }
         });
 
-
-        //group filter
-        group_select = findViewById(R.id.group_select);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, managerGroups_names);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        group_select.setAdapter(adapter);
-        group_text = "a";
-        group_select.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        record_reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                group_text = parent.getItemAtPosition(position).toString();
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                deleteButton.setText(group_text);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                sent_records.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Record record = dataSnapshot.getValue(Record.class);
+                    if(record.getSenderId().equals(Uid) && record.getGroupId().equals(groupId)) {
+                        sent_records.add(record);
+                    }
+                }
+
+                recyclerView.setAdapter(sent_record_adapter);
 
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+
 
         currentUser = auth.getCurrentUser();
         if (currentUser != null) {
@@ -177,10 +228,12 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
                 if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     requestRecordAudioPermission();
                 } else {
+                    editRecord.setVisibility(View.GONE);
                     startRecording();
                 }
             } else if (isRecording) {
                 stopRecording();
+                editRecord.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -192,6 +245,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View view) {
                 messageEt.setText("");
+                editRecord.setVisibility(View.GONE);
                 //deleteRecording();
             }
         });
@@ -206,8 +260,9 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                messageEt.setText("");
                 uploadAudioToFirebase();
+                messageEt.setText("");
+                editRecord.setVisibility(View.GONE);
             }
         });
 
@@ -247,21 +302,16 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean flag = true;
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Group group = dataSnapshot.getValue(Group.class);
-                    if (group.getGroupName().equals(group_text) && group.getManagerId().equals(SenderId)) {
-                        flag = false;
-                        String groupId = group.getGroupId();
+                    if (group.getGroupId().equals(groupId) && group.getManagerId().equals(SenderId)) {
                         Record newRecord = new Record(AudioName, RecordId, RecordTime, audioUrl, SenderId, groupId, message);
                         for (String uid : group.getMembers()) {
                             newRecord.send_to_user(uid);
                         }
-                        submitRecord(newRecord);
+                        submitRecord(newRecord,group.getGroupName());
                     }
                 }
-                if (flag)
-                    Toast.makeText(AudioRecordingActivity.this, "Please select a group.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -272,7 +322,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
 
     }
 
-    private void submitRecord(Record newRecord) {
+    private void submitRecord(Record newRecord, String groupName) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Records").push();
         String Rid = reference.getKey();
         newRecord.setRecordId(Rid);
@@ -280,7 +330,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(AudioRecordingActivity.this, "Record sent to " + group_text + " successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AudioRecordingActivity.this, "Record sent to " + groupName + " successfully!", Toast.LENGTH_SHORT).show();
                 } else
                     Toast.makeText(AudioRecordingActivity.this, "Failed sending the record!", Toast.LENGTH_SHORT).show();
             }
