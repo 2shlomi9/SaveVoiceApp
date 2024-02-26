@@ -1,3 +1,4 @@
+
 # SafeVoice: Group Voice Messaging App for Shabbat Observance during War
 
 ## Overview
