@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.safevoiceapp.AudioManagerRecordingActivity;
+import com.safevoiceapp.AudioMemberRecordingActivity;
 import com.safevoiceapp.R;
 
 import java.util.ArrayList;
@@ -81,8 +82,6 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
                 intent.putExtra("Group_ID", group.getGroupId());
                 intent.putExtra("Group_NAME", group.getGroupName());
                 context.startActivity(intent);
-
-
             }
         });
 
