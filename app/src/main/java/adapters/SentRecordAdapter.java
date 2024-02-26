@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.annotation.RequiresApi;
 import android.content.Context;
 
-import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -100,7 +99,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
     @Override
     public void onBindViewHolder(@NonNull SentRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getGroupId());
+        holder.title.setText(record.getSenderId());
         final String[] Rid = new String[1];
 
         // Set record button
@@ -115,6 +114,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
                 View contactPopupView = inflater.inflate(R.layout.record_player, null);
                 playButton = contactPopupView.findViewById(R.id.btnplay);
                 Read_receipts = contactPopupView.findViewById(R.id.txtReaders);
+
                 for (String id : record.getDelivered_users()){
                     user_reference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -139,7 +139,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
                             stopAudioFromUrl();
                         }
                         else {
-                            playButton.setImageResource(R.drawable.pause_record_foreground);
+                            playButton.setImageResource(R.drawable.icon_pause);
                             playAudioFromUrl(URL);
                         }
                         isplaying = !isplaying;

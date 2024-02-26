@@ -8,47 +8,30 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.safevoiceapp.AddGroupActivity;
-import com.safevoiceapp.AudioRecordingActivity;
-import com.safevoiceapp.MainActivity;
+import com.safevoiceapp.AudioManagerRecordingActivity;
 import com.safevoiceapp.R;
-import com.safevoiceapp.loginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import classes.Group;
-import classes.Record;
-import classes.User;
 
 public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManager.MyViewHolder> {
 
     Context context;
     ArrayList<Group> list;
 
-//    private FirebaseStorage storage;
-//    private StorageReference storageReference;
+
     public static String currUid;
     private AlertDialog.Builder groupOptions;
     private AlertDialog options;
@@ -71,7 +54,6 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
         this.groupOptions = groupOptions;
         this.group_manager = new ArrayList<String>();
 
-        //this.options = options;
 
     }
 
@@ -94,7 +76,7 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
         holder.group_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context , AudioRecordingActivity.class);
+                Intent intent = new Intent(context , AudioManagerRecordingActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("Group_ID", group.getGroupId());
                 intent.putExtra("Group_NAME", group.getGroupName());

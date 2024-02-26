@@ -110,9 +110,6 @@ public class MemberGroupActivity extends AppCompatActivity {
         memberGroupsData = findViewById(R.id.membersGroup);
         initUI();  // Call initUI here after addGroup is initialized
 
-
-
-
     }
     private void refresh_memberGroupsData(DataSnapshot snapshot) {
         memberGroups.clear();

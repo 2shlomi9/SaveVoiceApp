@@ -21,7 +21,7 @@
             android:name=".MediaPlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".AudioRecordingActivity"
+            android:name=".AudioManagerRecordingActivity"
             android:exported="false" />
         <activity
             android:name=".MemberGroupActivity"

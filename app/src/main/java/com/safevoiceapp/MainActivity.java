@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, ManagerGroupActivity.class));
                     return true;
                 } else if (itemId == R.id.nav_add) {// Start the activity outside of the switch statement
-                    startActivity(new Intent(MainActivity.this, AudioRecordingActivity.class));
+                    startActivity(new Intent(MainActivity.this, MediaPlayerActivity.class));
                     return true; // Return true to prevent further processing
                 } else if (itemId == R.id.voice_chat) {
                     startActivity(new Intent(MainActivity.this, MemberGroupActivity.class));

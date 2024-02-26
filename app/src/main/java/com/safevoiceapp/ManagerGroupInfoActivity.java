@@ -31,8 +31,6 @@ import classes.User;
 public class ManagerGroupInfoActivity extends AppCompatActivity {
 
 
-
-
    private String  groupName,groupId;
    private Context context;
    private DatabaseReference group_reference,user_reference;

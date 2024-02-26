@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textSize="10sp"
-        android:text="groups you manage:\n"
+        android:text="groups you members in:\n"
         android:layout_below="@+id/username_txt"
         android:textStyle="bold" />
     <androidx.recyclerview.widget.RecyclerView

@@ -29,13 +29,12 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private DatabaseReference group_reference, user_reference;
-    private Button logout,safeMode;
+    private Button logout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         logout = findViewById(R.id.logout);
-        safeMode = findViewById(R.id.safeMode);
         fullNameTv =findViewById(R.id.tvFullName);
         userNameTv =findViewById(R.id.tvUserName);
         emailTv = findViewById(R.id.tvEmail);
@@ -68,12 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        safeMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ProfileActivity.this, MediaPlayerActivity.class));
-            }
-        });
+
 
 
 

@@ -121,7 +121,7 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
                             stopAudioFromUrl();
                         }
                         else {
-                            playButton.setImageResource(R.drawable.pause_record_foreground);
+                            playButton.setImageResource(R.drawable.icon_pause);
                             playAudioFromUrl(URL);
                             record.deliver_to_user(Uid);
                             holder.title.setBackgroundColor(R.color.green);

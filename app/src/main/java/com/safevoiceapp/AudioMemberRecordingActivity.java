@@ -5,25 +5,26 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,27 +39,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
-
-import java.util.ArrayList;
-
-import adapters.SentRecordAdapter;
-import classes.Record;
-
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import adapters.ReceiveRecordAdapter;
+import adapters.SentRecordAdapter;
 import classes.Group;
-import classes.User;
+import classes.Record;
 
-
-public class AudioRecordingActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class AudioMemberRecordingActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
@@ -76,15 +69,9 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
 
     private String audioFilePath;
 
-    private ImageView recordButton , groupInfo;
+    private ImageView recordButton ,deleteButton,listenAgainButton,sendButton, groupInfo;
     private TextView groupTitle;
     private RelativeLayout editRecord;
-
-    private Button deleteButton;
-    private Button listenAgainButton;
-    private Button sendButton;
-
-    //private boolean isRecording = false;
     private CountDownTimer countDownTimer;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -101,8 +88,6 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
     private Context context = this;
     ArrayList<Group> list;
 
-    //    private FirebaseStorage storage;
-//    private StorageReference storageReference;
     public static String currUid;
     private AlertDialog.Builder groupOptions;
     private AlertDialog options;
@@ -129,7 +114,6 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         groupInfo = findViewById(R.id.groupInfo);
         messageEt = findViewById(R.id.msgText);
         listenAgainButton = findViewById(R.id.btnListenAgain);
-        sendButton = findViewById(R.id.btnSend);
         managerGroups_id = new ArrayList<String>();
         managerGroups_names = new ArrayList<String>();
         ureference = FirebaseDatabase.getInstance().getReference("Users");
@@ -225,15 +209,17 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         if (v == recordButton) {
             if (!isRecording) {
-                if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     requestRecordAudioPermission();
                 } else {
                     editRecord.setVisibility(View.GONE);
                     startRecording();
+                    recordButton.setImageResource(R.drawable.stop_icon);
                 }
             } else if (isRecording) {
                 stopRecording();
                 editRecord.setVisibility(View.VISIBLE);
+                recordButton.setImageResource(R.drawable.ic_mic);
             }
         }
     }
@@ -246,7 +232,12 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             public void onClick(View view) {
                 messageEt.setText("");
                 editRecord.setVisibility(View.GONE);
-                //deleteRecording();
+                if (isRecording) {
+                    stopRecording(); // Stop recording if in progress
+                }
+
+                deleteRecording(); // Delete the recording
+
             }
         });
 
@@ -254,7 +245,13 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View view) {
                 // Handle listen again action
-                Toast.makeText(AudioRecordingActivity.this, "Listening again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AudioMemberRecordingActivity.this, "Listening again", Toast.LENGTH_SHORT).show();
+                if (isRecording) {
+                    stopRecording(); // Stop recording if in progress
+                }
+
+                listenAgain(); // Play the recorded audio again
+
             }
         });
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -330,9 +327,9 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(AudioRecordingActivity.this, "Record sent to " + groupName + " successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AudioMemberRecordingActivity.this, "Record sent to " + groupName + " successfully!", Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(AudioRecordingActivity.this, "Failed sending the record!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AudioMemberRecordingActivity.this, "Failed sending the record!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -398,7 +395,8 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         }
     }
 
-        private void uploadAudioToFirebase() {
+
+    private void uploadAudioToFirebase() {
         if (audioFile != null) {
             Uri fileUri = Uri.fromFile(new File(audioFile));
             StorageReference audioRef = storageReference.child("audio").child( System.currentTimeMillis() + ".mp3");
@@ -408,7 +406,7 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
                             // uri is the download URL of the uploaded audio file
                             audioUrl = uri.toString();
                             // Now you can use audioUrl as needed
-                            Toast.makeText(AudioRecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AudioMemberRecordingActivity.this, "Recording sent to Firebase", Toast.LENGTH_SHORT).show();
 
                             // You can pass the audioUrl to any method or store it for later use
                             // Example: saveAudioUrl(audioUrl);
@@ -420,10 +418,10 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
 
 
 
-                        Toast.makeText(AudioRecordingActivity.this, "Audio uploaded to Firebase Storage!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AudioMemberRecordingActivity.this, "Audio uploaded to Firebase Storage!", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(AudioRecordingActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AudioMemberRecordingActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
     }
@@ -441,11 +439,39 @@ public class AudioRecordingActivity extends AppCompatActivity implements View.On
         // Convert the UUID to a string and remove dashes
         return uuid.toString().replace("-", "");
     }
+    private void deleteRecording() {
+        if (audioFile != null) {
+            File fileToDelete = new File(audioFile);
+            if (fileToDelete.exists()) {
+                if (fileToDelete.delete()) {
+                    Toast.makeText(this, "Recording deleted successfully", Toast.LENGTH_SHORT).show();
+                    // Optionally, you can reset UI elements related to recording here
+                    audioFile = null; // Reset audio file path
+                } else {
+                    Toast.makeText(this, "Failed to delete recording", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(this, "No recording to delete", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-
-
+    private void listenAgain() {
+        if (audioFile != null) {
+            // Play the recorded audio file using a MediaPlayer or any other audio playback mechanism
+            // Example using MediaPlayer:
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(audioFile);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                // Optionally, you can add controls to pause/stop the playback or handle playback completion
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to play recording", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "No recording to play", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
-
-
-
-
