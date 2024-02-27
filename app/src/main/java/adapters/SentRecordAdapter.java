@@ -34,9 +34,11 @@ import com.safevoiceapp.R;
 import java.io.IOException;
 
 
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 import classes.Record;
@@ -103,7 +105,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                holder.title.setText(user.getuserName() + "(" + user.getFullName() + ")");
+                holder.title.setText(user.getuserName() + "(" + user.getFullName() + ")"+getCurrentDate());
             }
 
             @Override
@@ -220,7 +222,16 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
             mediaPlayer.reset();
         }
     }
+    private String getCurrentDate() {
+        // Specify the date format you want
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+        // Get the current date
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        // Format the date as a string
+        return dateFormat.format(currentDate);
+    }
 
 
 }
