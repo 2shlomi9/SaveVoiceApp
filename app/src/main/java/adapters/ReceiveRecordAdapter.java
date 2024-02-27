@@ -213,6 +213,7 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
             mediaPlayer.reset();
         }
     }
+    // Add the getCurrentDate method
     private String getCurrentDate() {
         // Specify the date format you want
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

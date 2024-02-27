@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/mainback"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Blue"
+        android:background="@color/whiteGray"
         android:padding="10dp"
         android:id="@+id/toolbar">
 
@@ -68,7 +69,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="4dp"
             android:src="@drawable/icon_search"
-            app:tint="@color/Blue" />
+            app:tint="@color/white" />
 
     </RelativeLayout>
 

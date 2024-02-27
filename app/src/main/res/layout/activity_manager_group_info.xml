@@ -30,7 +30,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="140dp"
+                android:layout_marginLeft="125dp"
                 android:layout_toRightOf="@id/backBtn"
                 android:id="@+id/profile_pic_layout" />
             <ImageView
