@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,8 +34,10 @@ public class registerActivity extends AppCompatActivity {
     private Button btnRegister;
     private FirebaseAuth mAuth;
     private TextView loginUser;
+    private Boolean isShowPass = false;
 
-    private CheckBox show_pass;
+
+    private ImageView show_pass;
 
 
 
@@ -53,7 +56,7 @@ public class registerActivity extends AppCompatActivity {
         last_nameTextView = findViewById(R.id.lastname);
         user_nameTextView = findViewById(R.id.username);
         emailTextView = findViewById(R.id.email);
-        passwordTextView = findViewById(R.id.password);
+        passwordTextView= findViewById(R.id.password);
         btnRegister = findViewById(R.id.register);
         loginUser = findViewById(R.id.login_user);
         show_pass = findViewById(R.id.show_pass);
@@ -77,15 +80,19 @@ public class registerActivity extends AppCompatActivity {
             }
         });
         //set show pass
-        show_pass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        show_pass.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Handle checkbox state changes here
-                if (isChecked) {
-                    passwordTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
-                } else {
+            public void onClick(View v) {
+                if(isShowPass) {
+                    show_pass.setImageResource(R.drawable.eye_icon);
                     passwordTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 }
+                else {
+                    show_pass.setImageResource(R.drawable.not_eye_icon);
+                    passwordTextView.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+                }
+                isShowPass =!isShowPass;
+
             }
         });
         //......................................................................................

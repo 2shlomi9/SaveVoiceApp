@@ -38,7 +38,7 @@ public class StartActivity extends AppCompatActivity {
 
         linearLayout.animate().alpha(0f).setDuration(10);
 
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.start; // Replace with your video file
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.start2; // Replace with your video file
         // Set the video URI
         Uri videoUri = Uri.parse(videoPath);
 

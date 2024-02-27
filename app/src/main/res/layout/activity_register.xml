@@ -4,24 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDFDFD"
+    android:background="@drawable/login1"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="12dp"
     tools:context=".registerActivity">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:src="@drawable/logo" />
 
 
     <EditText
         android:id="@+id/firstname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_background"
+        android:layout_marginTop="80dp"
+        android:autofillHints=""
         android:hint="First name"
         android:padding="10dp" />
     <EditText
@@ -29,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_background"
         android:hint="Last name"
         android:padding="10dp" />
     <EditText
@@ -37,7 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_background"
         android:hint="Username"
         android:padding="10dp" />
 
@@ -46,36 +39,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_background"
         android:hint="Email"
         android:padding="10dp" />
 
-    <EditText
-        android:id="@+id/password"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edit_text_background"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="10dp" />
-    <CheckBox
-        android:id="@+id/show_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/password"
-        android:layout_marginLeft="10dp"
-        android:text="Show"
-        android:textColor="#674242"
-        android:checked="false"
-        android:textSize="20dp" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="301dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:hint="@string/password"
+            android:textColor="@color/black"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/show_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/eye_icon" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
-        android:background="@drawable/button_background"
+        android:background="@drawable/edit_text_rounded_corner"
+        android:backgroundTint="@color/whiteBrown"
         android:padding="10dp"
         android:text="REGISTER" />
 
@@ -83,7 +80,8 @@
         android:id="@+id/login_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:layout_marginTop="15dp"
-        android:text="Already a user? LogIn" />
+        android:text="Already Have a User ? Login" />
 
 </LinearLayout>

@@ -47,6 +47,7 @@ public class ManagerGroupInfoActivity extends AppCompatActivity {
     private ImageView editBtn, deleteBtn, inviteBtn, backBtn;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,13 +45,14 @@ public class ManagerGroupActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AlertDialog.Builder dialog_builder;
 
-//    private BottomNavigationView bottomNavigationView;
-//    private Fragment selectorFragment;
+    private Button viewBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_group);
+        viewBtn = findViewById(R.id.viewBtn);
 
         managerGroups = new ArrayList<Group>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -66,6 +68,7 @@ public class ManagerGroupActivity extends AppCompatActivity {
         dialog_builder = new AlertDialog.Builder(this);
         groupAdapter = new GroupAdapterManager(this, managerGroups, dialog_builder);
         recyclerView.setAdapter(groupAdapter);
+
 
         initUI();  // Call initUI here after addGroup is initialized
 
@@ -97,7 +100,13 @@ public class ManagerGroupActivity extends AppCompatActivity {
 
             }
         });
+        viewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewBtn.setVisibility(View.GONE);
+            }
 
+        });
         createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

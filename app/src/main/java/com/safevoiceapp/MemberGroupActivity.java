@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +44,7 @@ public class MemberGroupActivity extends AppCompatActivity {
     private TextView memberGroupsData, fullname_txt;
     private RecyclerView recyclerView;
     private AlertDialog.Builder dialog_builder;
+    private Button viewBtn;
 
 //    private BottomNavigationView bottomNavigationView;
 //    private Fragment selectorFragment;
@@ -50,8 +53,7 @@ public class MemberGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_group);
-
-
+        viewBtn = findViewById(R.id.viewBtn);
 
         memberGroups = new ArrayList<Group>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -66,9 +68,8 @@ public class MemberGroupActivity extends AppCompatActivity {
         dialog_builder = new AlertDialog.Builder(this);
         groupAdapter = new GroupAdapterMember(this, memberGroups, dialog_builder);
         recyclerView.setAdapter(groupAdapter);
+        viewBtn.setVisibility(View.VISIBLE);
 
-
-        fullname_txt = findViewById(R.id.username_txt);
         initUI();  // Call initUI here after addGroup is initialized
 
     }
@@ -97,6 +98,13 @@ public class MemberGroupActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+        });
+        viewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewBtn.setVisibility(View.GONE);
+            }
+
         });
 
 

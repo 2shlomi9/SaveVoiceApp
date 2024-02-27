@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/mainback"
     tools:context=".HistoryActivity">
 
 
@@ -24,15 +25,19 @@
         android:id="@+id/switchbtn"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:layout_centerVertical="true"
-        android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/edit_text_rounded_corner"
+        android:backgroundTint="@color/whiteBrown"
         android:clickable="true"
         android:padding="10dp"
-        android:text="Receive Records"/>
+        android:text="Receive Records"
+        android:textSize="10dp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recordsList"
+        android:layout_marginTop="35dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title_txt"

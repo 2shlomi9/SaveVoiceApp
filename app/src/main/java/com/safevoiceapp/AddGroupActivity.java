@@ -79,7 +79,7 @@ public class AddGroupActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
                     Toast.makeText(AddGroupActivity.this, group.getGroupName() + " submitted successfully!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    finish(); // Close the activity
                 }
                 else
                     Toast.makeText(AddGroupActivity.this, "Submission failed!", Toast.LENGTH_SHORT).show();

@@ -22,27 +22,24 @@
         android:textStyle="bold" />
 
 
-    <TextView
-        android:id="@+id/username_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="50dp"
-        android:gravity="center"
-        android:text="Groups you member"
-        android:layout_below="@id/username_txt"
-        android:textColor="@color/colorBlack"
-        android:textSize="20dp"
-        android:textStyle="bold" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/memberGroupsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/username_txt"
-        android:layout_marginBottom="60dp" />
+        android:layout_height="500dp"
+        android:layout_below="@id/memberGroupsData"
+        android:layout_marginBottom="60dp"/>
+    <Button
+        android:id="@+id/viewBtn"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/memberGroupsList"
+        android:layout_centerInParent="true"
+        android:background="@drawable/edit_text_rounded_corner"
+        android:backgroundTint="@color/whiteBrown"
+        android:padding="10dp"
+        android:text="View Groups"
+        android:textSize="10dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

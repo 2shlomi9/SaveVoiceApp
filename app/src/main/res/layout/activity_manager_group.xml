@@ -28,7 +28,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/managedGroupsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         android:layout_below="@id/username_txt"
         android:layout_marginBottom="60dp" />
 
@@ -45,5 +45,18 @@
         android:clickable="true"
         android:backgroundTint="@color/colorAccent"
         android:contentDescription="add group" />
+
+    <Button
+        android:id="@+id/viewBtn"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/managedGroupsList"
+        android:layout_centerInParent="true"
+        android:background="@drawable/edit_text_rounded_corner"
+        android:backgroundTint="@color/whiteBrown"
+        android:padding="10dp"
+        android:text="View Groups"
+        android:textSize="10dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
