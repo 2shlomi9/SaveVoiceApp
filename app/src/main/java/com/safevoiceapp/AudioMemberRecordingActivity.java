@@ -54,13 +54,6 @@ import classes.Record;
 public class AudioMemberRecordingActivity extends AppCompatActivity {
 
 
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
-    private MediaRecorder mediaRecorder;
-    private String audioFile = null;
-
-    private boolean isRecording = false;
-    private Button stopRecordingButton;
-
     // Firebase Storage
     private StorageReference storageReference;
     private StorageReference storageRef;
@@ -69,32 +62,25 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
 
     private String audioFilePath;
 
-    private ImageView send_button ,deleteButton,listenAgainButton,sendButton, groupInfo;
+    private ImageView send_button , groupInfo;
     private TextView groupTitle;
-    private RelativeLayout editRecord;
-    private CountDownTimer countDownTimer;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private FirebaseStorage storage;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference ureference, group_reference, record_reference;
+    private DatabaseReference user_reference, group_reference, record_reference;
     private EditText messageEt;
     private ArrayList<String> memberGroups_id, memberGroups_names;
     private String groupId,groupName, Uid;
-    private SentRecordAdapter sent_record_adapter;
     private ReceiveRecordAdapter receive_record_adapter;
     private RecyclerView recyclerView;
     private AlertDialog.Builder dialog_builder;
     private ArrayList<Record> receive_records;
     private Context context = this;
     ArrayList<Group> list;
-
-
     public static String currUid;
     private AlertDialog.Builder groupOptions;
     private AlertDialog options;
-    private DatabaseReference user_reference;
-    String participantstr = "";
 
 
 
@@ -103,17 +89,15 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_options_member);
-
         // Initialize Firebase Storage
         storageReference = FirebaseStorage.getInstance().getReference();
-
         groupTitle = findViewById(R.id.tvTitle);
         send_button = findViewById(R.id.btnSend);
         groupInfo = findViewById(R.id.groupInfo);
         messageEt = findViewById(R.id.msgText);
         memberGroups_id = new ArrayList<String>();
         memberGroups_names = new ArrayList<String>();
-        ureference = FirebaseDatabase.getInstance().getReference("Users");
+        user_reference = FirebaseDatabase.getInstance().getReference("Users");
         group_reference = FirebaseDatabase.getInstance().getReference("Groups");
         record_reference = FirebaseDatabase.getInstance().getReference("Records");
         auth = FirebaseAuth.getInstance();
@@ -126,7 +110,6 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
         groupName = intent.getStringExtra("Group_NAME");
         //set records list
         receive_records = new ArrayList<Record>();
-        record_reference = FirebaseDatabase.getInstance().getReference("Records");
         recyclerView = findViewById(R.id.recordsList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -138,11 +121,11 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
         groupInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context , MemberGroupInfoActivity.class);
+                Intent intent = new Intent(AudioMemberRecordingActivity.this , MemberGroupInfoActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("Group_ID", groupId);
+                intent.putExtra("Group_ID",groupId);
                 intent.putExtra("Group_NAME", groupName);
-                context.startActivity(intent);
+                startActivity(intent);
 
             }
         });
@@ -151,7 +134,7 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                refresh_menagerGroupsData(snapshot);
+                refresh_managerGroupsData(snapshot);
             }
 
             @Override
@@ -187,10 +170,12 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
             // User is signed in, get their UID
             userId = Uid;
         }
-        initUI();
+
+
     }
 
-    private void refresh_menagerGroupsData(DataSnapshot snapshot) {
+
+    private void refresh_managerGroupsData(DataSnapshot snapshot) {
         memberGroups_names.clear();
         memberGroups_id.clear();
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -200,15 +185,12 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
                 memberGroups_names.add(group.getGroupName());
             }
         }
-
     }
-
-
-    private void initUI() {
-
-
-    }
-
-
-
 }
+
+
+
+
+
+
+

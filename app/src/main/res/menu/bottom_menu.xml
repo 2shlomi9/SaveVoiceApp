@@ -2,23 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/safe_icon"
+        android:iconTint="@color/black"
         android:title=""/>
 
     <item android:id="@+id/nav_group"
-        android:icon="@drawable/plusegroup"
+        android:icon="@drawable/group_manager_icon"
+        android:iconTint="@color/black"
         android:title=""/>
 
     <item android:id="@+id/nav_add"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/history_icon"
+        android:iconTint="@color/black"
         android:title=""/>
 
     <item android:id="@+id/voice_chat"
-        android:icon="@drawable/voice_chat"
+        android:icon="@drawable/group_member_icon"
+        android:iconTint="@color/black"
         android:title=""/>
 
     <item android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
+        android:iconTint="@color/black"
         android:title=""/>
 
 </menu>

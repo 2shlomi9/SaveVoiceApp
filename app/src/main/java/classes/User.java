@@ -98,6 +98,15 @@ public class User {
     public void setUserGroups(ArrayList<String> userGroups) {
         this.userGroups = userGroups;
     }
+    public void addGroup(String groupId){
+        this.userGroups.add(groupId);
+    }
+    public void exitGroup(String groupId){
+        this.userGroups.remove(groupId);
+    }
+    public void deleteGroup(String groupId){
+        this.userGroups.remove(groupId);
+    }
 
     // ---- END OF GET(ERS) & SET(ERS) ---- //
 

@@ -52,44 +52,6 @@ public class MemberGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member_group);
 
 
-//        bottomNavigationView = findViewById(R.id.bottom_navigation);
-//
-//        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//
-//                int itemId = item.getItemId();
-//                if (itemId == R.id.nav_home) {
-//                    startActivity(new Intent(AddGroupActivity.this, MainActivity.class));
-//                    return true;
-//                } else if (itemId == R.id.nav_group) {
-//                    return true;
-//                } else if (itemId == R.id.nav_add) {// Start the activity outside of the switch statement
-//                    startActivity(new Intent(AddGroupActivity.this, RecordingActivity.class));
-//                    return true; // Return true to prevent further processing
-//                } else if (itemId == R.id.voice_chat) {
-//                    return true;
-//                } else if (itemId == R.id.nav_profile) {
-//                    return true;
-//                }
-//
-//                if (selectorFragment != null) {
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectorFragment).commit();
-//                }
-//
-//                return true;
-//            }
-//        });
-
-
-//
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
-//            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
-//        } else {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
-//        }
-
-
 
         memberGroups = new ArrayList<Group>();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,7 +69,6 @@ public class MemberGroupActivity extends AppCompatActivity {
 
 
         fullname_txt = findViewById(R.id.username_txt);
-        memberGroupsData = findViewById(R.id.membersGroup);
         initUI();  // Call initUI here after addGroup is initialized
 
     }
@@ -131,31 +92,12 @@ public class MemberGroupActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 refresh_memberGroupsData(snapshot);
-                memberGroupsData.setText("groups you manage:\n");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-        user_reference.child(Uid).addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(User.class);
-                if (user != null){
-                    fullname_txt.setText("Hello "+user.getFullName());
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-
-
 
 
     }

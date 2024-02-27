@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,116 +31,72 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.UserParticipantsAdapter;
 import classes.Group;
 import classes.User;
 
 public class MemberGroupInfoActivity extends AppCompatActivity {
 
-    Context context;
-    ArrayList<Group> list;
+    private String groupName, groupId;
+    private Context context;
+    private DatabaseReference group_reference, user_reference;
 
-    //    private FirebaseStorage storage;
-//    private StorageReference storageReference;
-    public static String currUid, Uid;
-    private String  groupName,groupId;
     private Group group;
 
-
-    private AlertDialog.Builder groupOptions;
-    private AlertDialog options;
-    private DatabaseReference group_reference, user_reference;
-    Bitmap bitmap;
-    private List<String> group_members;
-    String participantstr = "";
+    private UserParticipantsAdapter user_participants_adapter;
+    private String Uid;
+    private RecyclerView recyclerView;
+    private AlertDialog.Builder dialog_builder;
+    private ArrayList<User> user_participants;
+    private TextView title;
+    private Spinner members;
+    private ImageView exitBtn, backBtn;
+    private EditText userInviteTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_group_info);
 
+        //set users list
+        user_participants = new ArrayList<User>();
+        recyclerView = findViewById(R.id.participants_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        dialog_builder = new AlertDialog.Builder(this);
+        user_participants_adapter = new UserParticipantsAdapter(this, groupId, user_participants, dialog_builder);
+        Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("Group_ID");
         groupName = intent.getStringExtra("Group_NAME");
         user_reference = FirebaseDatabase.getInstance().getReference("Users");
         group_reference = FirebaseDatabase.getInstance().getReference("Groups");
-        DatabaseReference ureference = FirebaseDatabase.getInstance().getReference("Users");
-        final String[] Rid = new String[1];
-
-        TextView title, managertxt;
-        Spinner members;
-        Button exitBtn;
-        title = findViewById(R.id.tvTitle);
-        exitBtn = findViewById(R.id.exitGroup);
-        members = findViewById(R.id.tvMembers);
-        managertxt = findViewById(R.id.managerIdTv);
-
-
-
-
-        //set title
-        title.setText(group.getGroupName());
-
-        //set manager name
-        user_reference.child(group.getManagerId()).addValueEventListener(new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
+        group_reference.child(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User manager = snapshot.getValue(User.class);
-                if (manager != null){
-                    managertxt.setText("Group Manager: \n"+manager.getuserName()+" ("+manager.getFullName()+")");
-                }
+                group = snapshot.getValue(Group.class);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-        //Set participants
-        DatabaseReference referenceD = FirebaseDatabase.getInstance().getReference("Groups").child(group.getGroupId());
-        referenceD.addValueEventListener(new ValueEventListener() {
+
+        context = getApplicationContext();
+        title = findViewById(R.id.tvTitle);
+        exitBtn = findViewById(R.id.exitGroup);
+        backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Group g = snapshot.getValue(Group.class);
-                if (g != null) {
-                    if (g.getMembers().isEmpty()) {
-                        String[] participants = {"no participant"};
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, participants);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        members.setAdapter(adapter);
-                    } else {
-                        ArrayList<String> participants = new ArrayList<String>();
-                        for (int i = 0; i < g.getMembers().size(); i++) {
-                            ureference.child(g.getMembers().get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    User profile = snapshot.getValue(User.class);
-                                    if (profile != null) {
-                                        participants.add(profile.getFullName());
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, participants);
-                                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        members.setAdapter(adapter);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-
+            public void onClick(View v) {
+                finish();
             }
         });
 
 
-
-        //Set exit button
+        //set title
+        title.setText(groupName);
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,18 +106,77 @@ public class MemberGroupInfoActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         group_reference.child(group.getGroupId()).setValue(group);
                         Toast.makeText(context.getApplicationContext(), "exited from group "+group.getGroupName() + " successfully!", Toast.LENGTH_SHORT).show();
-                        options.cancel();
+                        user_reference.child(Uid).setValue(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User user = snapshot.getValue(User.class);
+                                user.exitGroup(groupId);
+                                user_reference.child(Uid).setValue(user);
+                                recyclerView.setAdapter(user_participants_adapter);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         System.out.println("Failed.");
                     }
                 });
+                // Finish current Activity
+                Intent intent = new Intent(MemberGroupInfoActivity.this, MemberGroupActivity.class);
+
+                // Set flags to clear the stack and start a new task
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                // Start the new activity
+                startActivity(intent);
+
+                // Finish the current activity (EditGroupActivity)
+                finish();
+
+
+            }
+
+        });
+
+        refresh_users();
+
+    }
+
+    private void refresh_users() {
+
+        user_reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user_participants.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user.getUserGroups().contains(groupId)) {
+                        user_participants.add(user);
+                    }
+                }
+                recyclerView.setAdapter(user_participants_adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
 
-
     }
-
 }
+
+
+
+
+
+
+
+
+
+

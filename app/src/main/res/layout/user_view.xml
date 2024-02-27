@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/record_view"
+    android:id="@+id/user_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -17,14 +17,24 @@
         android:id="@+id/toolbar">
 
         <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Record"
+            android:text="Username"
+            android:textSize="15sp"
+            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/profile_pic_layout"
+            android:id="@+id/tvTitle"
+            />
+
+        <include layout="@layout/profile_pic_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/profile_pic_layout"
+            />
 
 
     </RelativeLayout>

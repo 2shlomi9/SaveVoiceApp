@@ -13,12 +13,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="Blue">#00AAFF</color>
-
+    <color name="whiteBrown">#ece8e2</color>
+    <color name="whiteGray">#ece8e2</color>
     <color name="transparent">#00000000</color>
     <color name="edittextColor">#DDDDDD</color>
     <color name="grey">#AAAAAA</color>
-
-    <item name="cardBackground" type="color">#f6f6f6</item>
+    <color name="newGray">#d9d9d9</color>
     <color name="textColor">#999DA4</color>
+    <item name="cardBackground" type="color">#f6f6f6</item>
     <color name="white">#FFFFFFFF</color>
 </resources>

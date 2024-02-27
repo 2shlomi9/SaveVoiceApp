@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.safevoiceapp.AudioManagerRecordingActivity;
-import com.safevoiceapp.AudioMemberRecordingActivity;
 import com.safevoiceapp.R;
 
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
         Group group = list.get(position);
         holder.title.setText(group.getGroupName());
 
-        DatabaseReference ureference = FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference user_reference = FirebaseDatabase.getInstance().getReference("Users");
         final String[] Rid = new String[1];
        // Set group button
         holder.group_btn.setOnClickListener(new View.OnClickListener() {
@@ -85,13 +84,7 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
             }
         });
 
-
-
-
-
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -107,14 +100,11 @@ public class GroupAdapterManager extends RecyclerView.Adapter<GroupAdapterManage
         CardView group_btn;
         TextView title;
 
-
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             group_btn = itemView.findViewById(R.id.group_view);
             title = itemView.findViewById(R.id.tvTitle);
-
-
 
         }
     }

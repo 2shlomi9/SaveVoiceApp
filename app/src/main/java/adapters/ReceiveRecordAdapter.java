@@ -24,20 +24,26 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import com.google.firebase.database.ValueEventListener;
 import com.safevoiceapp.R;
 
 import java.io.IOException;
 
 
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 import classes.Record;
+import classes.User;
 
 public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdapter.MyViewHolder> {
 
@@ -95,9 +101,22 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
     @Override
     public void onBindViewHolder(@NonNull ReceiveRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getMessage());
+        user_reference.child(record.getSenderId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                holder.title.setText(user.getuserName() + "(" + user.getFullName() + ")"+ getCurrentDate());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         if(record.is_delivered_to_user(Uid))
-            holder.title.setBackgroundColor(R.color.green);
+            holder.title.setBackgroundColor(R.color.newGray);
         DatabaseReference record_reference = FirebaseDatabase.getInstance().getReference("Records");
         final String[] Rid = new String[1];
 
@@ -193,6 +212,16 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
             mediaPlayer.stop();
             mediaPlayer.reset();
         }
+    }
+    private String getCurrentDate() {
+        // Specify the date format you want
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        // Get the current date
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        // Format the date as a string
+        return dateFormat.format(currentDate);
     }
 
 }

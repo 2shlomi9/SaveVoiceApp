@@ -99,7 +99,18 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
     @Override
     public void onBindViewHolder(@NonNull SentRecordAdapter.MyViewHolder holder, int position) {
         Record record = list.get(position);
-        holder.title.setText(record.getSenderId());
+        user_reference.child(record.getSenderId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                holder.title.setText(user.getuserName() + "(" + user.getFullName() + ")");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         final String[] Rid = new String[1];
 
         // Set record button
@@ -209,6 +220,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
             mediaPlayer.reset();
         }
     }
+
 
 
 }

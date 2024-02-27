@@ -9,20 +9,33 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp">
 
+
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#E5EEF1">
+        android:background="@color/whiteBrown"
+        android:padding="10dp"
+        android:id="@+id/toolbar">
 
         <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Group"
-            android:textColor="#024173"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:text="GroupName"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/profile_pic_layout"
+            android:id="@+id/tvTitle"
+            />
+        <include layout="@layout/group_pic_view"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:id="@+id/profile_pic_layout"
+            />
 
 
     </RelativeLayout>

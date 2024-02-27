@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,8 +23,8 @@ public class AddGroupActivity extends AppCompatActivity {
 
     private String userId;
     private EditText editTextGroupName, editTextDescription;
-    private Button buttonBack;
-    private Button buttonSave;
+    private ImageView buttonBack;
+    private ImageView buttonSave;
 
 
     @Override
@@ -33,8 +34,8 @@ public class AddGroupActivity extends AppCompatActivity {
 
         editTextGroupName = findViewById(R.id.editTextGroupName);
         editTextDescription = findViewById(R.id.editTextGroupDescription);
-        buttonBack = findViewById(R.id.buttonBack);
-        buttonSave = findViewById(R.id.buttonSave);
+        buttonBack = findViewById(R.id.backBtn);
+        buttonSave = findViewById(R.id.addGroup);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         initUI();
     }
@@ -78,7 +79,7 @@ public class AddGroupActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
                     Toast.makeText(AddGroupActivity.this, group.getGroupName() + " submitted successfully!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AddGroupActivity.this, ManagerGroupActivity.class));
+                    finish();
                 }
                 else
                     Toast.makeText(AddGroupActivity.this, "Submission failed!", Toast.LENGTH_SHORT).show();
@@ -87,12 +88,5 @@ public class AddGroupActivity extends AppCompatActivity {
 
 
     }
-//    public static String generateGroupId() {
-//        // Generate a random UUID
-//        UUID uuid = UUID.randomUUID();
-//
-//        // Convert the UUID to a string and remove dashes
-//        return uuid.toString().replace("-", "");
-//    }
 
 }

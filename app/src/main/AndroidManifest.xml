@@ -14,14 +14,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+        <activity
+            android:name=".EditGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InviteUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AudioManagerRecordingActivity"
+            android:exported="false" />
         <activity
             android:name=".ManagerGroupInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".MediaPlayerActivity"
+            android:name=".SafeModeActivity"
             android:exported="false" />
         <activity
-            android:name=".AudioManagerRecordingActivity"
+            android:name=".AudioMemberRecordingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MemberGroupInfoActivity"
             android:exported="false" />
         <activity
             android:name=".MemberGroupActivity"
@@ -30,7 +44,6 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".RecordingActivity" />
         <activity android:name=".AddGroupActivity" />
         <activity android:name=".ManagerGroupActivity" />
         <activity android:name=".MainActivity" />

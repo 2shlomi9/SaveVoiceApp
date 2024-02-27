@@ -4,19 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/mainback"
     tools:context=".ManagerGroupActivity">
 
 
-    <ImageView
-        android:id="@+id/btnCreateGroup"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_alignParentTop="true"
-        android:clickable="true"
-        android:contentDescription="add group"
-        android:src="@drawable/plusegroup" />
+
 
     <TextView
         android:id="@+id/username_txt"
@@ -27,26 +19,31 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
         android:gravity="center"
-        android:text="Hello"
+        android:text="Groups you manage"
         android:textColor="@color/colorBlack"
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menagesGroup"
-        android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="10sp"
-        android:text="groups you manage:\n"
-        android:layout_below="@+id/username_txt"
-        android:textStyle="bold" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/managedGroupsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/menagesGroup"
+        android:layout_below="@id/username_txt"
         android:layout_marginBottom="60dp" />
+
+    <ImageView
+        android:id="@+id/btnCreateGroup"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circular_bg"
+        android:src="@drawable/group_add_icon"
+        android:padding="4dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:backgroundTint="@color/colorAccent"
+        android:contentDescription="add group" />
 
 </RelativeLayout>

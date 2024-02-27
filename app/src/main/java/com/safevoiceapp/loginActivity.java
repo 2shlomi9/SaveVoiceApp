@@ -4,15 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +26,8 @@ public class loginActivity extends AppCompatActivity {
     private EditText password;
     private Button login;
     private TextView registerUser;
-    private CheckBox show_pass;
+    private ImageView show_pass;
+    private Boolean isShowPass = false;
 
     private FirebaseAuth mAuth;
 
@@ -67,15 +65,19 @@ public class loginActivity extends AppCompatActivity {
         });
 
         //set show pass
-        show_pass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        show_pass.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Handle checkbox state changes here
-                if (isChecked) {
-                    password.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
-                } else {
+            public void onClick(View v) {
+                if(isShowPass) {
+                    show_pass.setImageResource(R.drawable.eye_icon);
                     password.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 }
+                else {
+                    show_pass.setImageResource(R.drawable.not_eye_icon);
+                    password.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+                }
+                isShowPass =!isShowPass;
+
             }
         });
         //......................................................................................

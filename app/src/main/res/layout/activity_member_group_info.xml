@@ -4,94 +4,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/group_optionscv"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="8dp">
+    android:layout_height="match_parent"
+    android:background="@drawable/mainback"
+    tools:context=".ManagerGroupInfoActivity">
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
+        android:background="@drawable/mainback"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Group"
-            android:textColor="#024173"
-            android:textSize="24sp"
-            android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/InviteLn"
+            android:id="@+id/group_option"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/tvTitle"
-            android:orientation="horizontal">
-
-
-
-
-
-        </LinearLayout>
-
-
-
-
-
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_below="@+id/InviteLn"
+            android:layout_height="179dp"
             android:orientation="vertical">
+            <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_back" />
 
+            <include layout="@layout/group_pic_view"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:id="@+id/profile_pic_layout"
+                />
 
-            <TextView
-                android:id="@+id/managerIdTv"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Group manager: "
-                android:textColor="@color/colorBlack"
-                android:layout_marginRight="50dp"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Participants: "
-                android:textColor="@color/colorBlack"
-                android:layout_marginRight="50dp"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/tvMembers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="None"
-                android:textColor="@color/colorBlack"
-                android:textSize="20sp" />
+                android:background="@android:color/transparent"
+                android:layout_above="@id/msgData">
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="group name"
+                    android:textColor="@color/black"
+                    android:background="@android:color/transparent"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
 
-            <Button
-                android:id="@+id/exitGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
-                android:backgroundTint="#30432E2E"
-                android:text="Exit Group"
-                android:textColor="#250E0E"
-                android:textColorHint="#250E0E"
-                android:textSize="10dp" />
+            </RelativeLayout>
+
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/particTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Participants :"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_below="@id/group_option"
+
+            android:textStyle="bold" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/particTxt"
+            android:id="@+id/participants_recycler_view"
+            android:layout_above="@+id/exitGroup"/>
+
+            <ImageView
+                android:id="@+id/exitGroup"
+                android:layout_width="60dp"
+                android:layout_height="45dp"
+                android:src="@drawable/exit_icon"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true" />
+
+
+
+
     </RelativeLayout>
 
 
-</androidx.cardview.widget.CardView>
 
+</androidx.cardview.widget.CardView>
 

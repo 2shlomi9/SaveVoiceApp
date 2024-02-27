@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -35,10 +34,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
-import classes.Group;
 import classes.Record;
 
-public class MediaPlayerActivity extends AppCompatActivity {
+public class SafeModeActivity extends AppCompatActivity {
     private String mp3Url;
     private MediaPlayer mediaPlayer;
     private Button playButton;
@@ -72,13 +70,22 @@ public class MediaPlayerActivity extends AppCompatActivity {
     private DatabaseReference user_reference, group_reference, record_reference;
     private Spinner group_select;
     private ArrayList<String> managerGroups_id, managerGroups_names;
-    private String group_text, groupIdToSend, Uid, enterDate;
+    private String group_text, groupIdToSend, Uid, enterDate, alarmUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media_player);
+        setContentView(R.layout.activity_safe_mode);
+
+        // Detect when the app is launched and pin the screen
+        startLockTask();
+        alarmUrl = "https://firebasestorage.googleapis.com/v0/b/safevoice-2b6b5.appspot.com/o/audio%2FAlarm.mp3?alt=media&token=af43c1c5-9928-43ac-a56d-07b374dcdf37";
+
+
+
+
         LocalDateTime currentDateTime = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             currentDateTime = LocalDateTime.now();
@@ -93,7 +100,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         }
         record_reference = FirebaseDatabase.getInstance().getReference("Records");
         Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        playButton = findViewById(R.id.playButton);
+
 
         mediaPlayer = new MediaPlayer();
 
@@ -119,14 +126,15 @@ public class MediaPlayerActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     public void startBurstRecording(DataSnapshot snapshot){
         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
             Record record = dataSnapshot.getValue(Record.class);
             if (record.is_sent_to_user(Uid) &&isDateAfter(record.getRecordTime(), enterDate)) {
+                playSequentially(alarmUrl,record.getUrl());
 
-                playAudioFromUrl(record.getUrl());
                 record.deliver_to_user(Uid);
                 record_reference.child(record.getRecordId()).setValue(record);
             }
@@ -175,6 +183,7 @@ public class MediaPlayerActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -182,4 +191,21 @@ public class MediaPlayerActivity extends AppCompatActivity {
             mediaPlayer.release();
         }
     }
+    private void playSequentially(String firstUrl, String secondUrl) {
+        // Set completion listener to play the second URL after the first one finishes
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                // Reset the listener to avoid being called for future playback
+                mediaPlayer.setOnCompletionListener(null);
+
+                // Play the second URL
+                playAudioFromUrl(secondUrl);
+            }
+        });
+
+        // Play the first URL
+        playAudioFromUrl(firstUrl);
+    }
+
 }
