@@ -12,8 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true">
-    </VideoView>
+        android:layout_centerInParent="true"></VideoView>
 
 
     <LinearLayout
@@ -27,11 +26,10 @@
 
         <Button
             android:id="@+id/login"
-            android:layout_width="323dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edit_text_rounded_corner"
             android:backgroundTint="@color/whiteBrown"
-            android:layout_marginLeft="40dp"
             android:gravity="center"
             android:text="Log In"
             android:textAllCaps="false"
@@ -44,9 +42,8 @@
 
         <Button
             android:id="@+id/register"
-            android:layout_width="323dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginLeft="40dp"
             android:background="@drawable/edit_text_rounded_corner"
             android:backgroundTint="@color/whiteBrown"
             android:gravity="center"

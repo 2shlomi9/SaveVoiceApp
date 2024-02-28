@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -32,7 +33,7 @@ import classes.Group;
 import classes.User;
 import classes.Record;
 
-public class ReadPlayActivity extends AppCompatActivity {
+public class ReadConfigActivity extends AppCompatActivity {
     private String senderId, recordId,groupId;
     private ImageView btnplay;
     private Context context;
@@ -47,9 +48,10 @@ public class ReadPlayActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AlertDialog.Builder dialog_builder;
     private ArrayList<User> user_participants;
-    private TextView title;
+    private TextView txtTitle;
     private Spinner members;
     private ImageView exitBtn, backBtn;
+    private Button viewBtn;
     private EditText userInviteTxt;
     private boolean isPlaying = false;
 
@@ -58,7 +60,7 @@ public class ReadPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_read_play);
+        setContentView(R.layout.activity_read_config);
 
         Intent intent = getIntent();
         recordId = intent.getStringExtra("RecordID");
@@ -76,26 +78,27 @@ public class ReadPlayActivity extends AppCompatActivity {
         user_reference = FirebaseDatabase.getInstance().getReference("Users");
         group_reference = FirebaseDatabase.getInstance().getReference("Groups");
         record_reference =FirebaseDatabase.getInstance().getReference("Records");
-        btnplay = findViewById(R.id.btnplay);
+        txtTitle = findViewById(R.id.txtTitle);
+        viewBtn = findViewById(R.id.viewBtn);
+        backBtn = findViewById(R.id.backBtn);
 
-        btnplay.setOnClickListener(new View.OnClickListener() {
+        backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle listen again action
-                if (!isPlaying) {
-                    playAudioFromUrl(audioUrl);
-                    btnplay.setImageResource(R.drawable.stop_icon); // Change button image to pause icon
-                    isPlaying = true;
-                } else {
-                    stopAudioFromUrl();
-                    btnplay.setImageResource(R.drawable.play_icon); // Change button image to play icon
-                    isPlaying = false;
-                }
+                finish();
             }
         });
 
-        refresh_users();
 
+
+        viewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewBtn.setVisibility(View.GONE);
+                txtTitle.setVisibility(View.VISIBLE);
+                refresh_users();
+            }
+        });
     }
 
 private void refresh_users() {
@@ -112,7 +115,7 @@ private void refresh_users() {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Record record = dataSnapshot.getValue(Record.class);
 
-                        if (record.getDelivered_users().contains(user.getUid()) && user.getUid()!=Uid && record.getSenderId() != user.getUid()) {
+                        if (record.getDelivered_users().contains(user.getUid()) && user.getUid() != Uid && record.getSenderId() != user.getUid()) {
                             user_participants.add(user);
                         }
 

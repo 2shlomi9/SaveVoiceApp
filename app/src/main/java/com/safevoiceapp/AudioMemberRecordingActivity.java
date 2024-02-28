@@ -62,7 +62,7 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
 
     private String audioFilePath;
 
-    private ImageView send_button , groupInfo;
+    private ImageView send_button , groupInfo, backBtn;
     private TextView groupTitle;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -94,6 +94,7 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
         groupTitle = findViewById(R.id.tvTitle);
         send_button = findViewById(R.id.btnSend);
         groupInfo = findViewById(R.id.groupInfo);
+        backBtn = findViewById(R.id.backBtn);
         messageEt = findViewById(R.id.msgText);
         memberGroups_id = new ArrayList<String>();
         memberGroups_names = new ArrayList<String>();
@@ -118,6 +119,12 @@ public class AudioMemberRecordingActivity extends AppCompatActivity {
         receive_record_adapter = new ReceiveRecordAdapter(this,receive_records,dialog_builder);
 
         groupTitle.setText(groupName);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         groupInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -18,13 +18,22 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="Record"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnplay"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/play_record_foreground" />
 
 
     </RelativeLayout>

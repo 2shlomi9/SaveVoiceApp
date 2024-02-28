@@ -6,8 +6,7 @@
     tools:context=".ProfileActivity"
     android:orientation="vertical"
     android:background="@drawable/mainback"
-    android:gravity="center"
-    android:layout_margin="20dp">
+    android:gravity="center">
 
     <ImageView
         android:layout_width="100dp"
@@ -62,12 +61,13 @@
         android:orientation="vertical">
 
         <Button
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="40dp"
             android:background="@drawable/edit_text_rounded_corner"
             android:backgroundTint="@color/whiteBrown"
             android:layout_marginLeft="150dp"
             android:text="Log Out"
+            android:textSize="10dp"
             android:id="@+id/logout"/>
 
     </LinearLayout>

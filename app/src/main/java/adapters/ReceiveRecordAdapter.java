@@ -32,7 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
 import com.safevoiceapp.R;
-import com.safevoiceapp.ReadPlayActivity;
+import com.safevoiceapp.ReadConfigActivity;
 
 import java.io.IOException;
 
@@ -58,8 +58,7 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
     private AlertDialog options;
     private ImageView playButton;
 
-    //    private FirebaseStorage storage;
-//    private StorageReference storageReference;
+    private boolean isPlaying = false;
     public static String currUid;
 
     private DatabaseReference group_reference, user_reference , records_reference;
@@ -127,44 +126,47 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
         holder.record_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context , ReadPlayActivity.class);
+                Intent intent = new Intent(context , ReadConfigActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("RecordID", record.getRecordId());
                 intent.putExtra("RecordSender", record.getSenderId());
                 intent.putExtra("GroupID",record.getGroupId());
                 intent.putExtra("URL",record.getUrl());
                 context.startActivity(intent);
-//                currUid=record.getRecordId();
-//                String URL =record.getUrl();
-//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                View contactPopupView = inflater.inflate(R.layout.record_player, null);
-//
-//                playButton = contactPopupView.findViewById(R.id.btnplay);
-//
-//
-//                playButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if(isplaying){
-//                            playButton.setImageResource(R.drawable.play_record_foreground);
-//                            stopAudioFromUrl();
-//                        }
-//                        else {
-//                            playButton.setImageResource(R.drawable.icon_pause);
-//                            playAudioFromUrl(URL);
-//                            record.deliver_to_user(Uid);
-//                            holder.title.setBackgroundColor(R.color.green);
-//                            record_reference.child(currUid).setValue(record);
-//                        }
-//                        isplaying = !isplaying;
-//                    }
-//                });
-//                recordOptions.setView(contactPopupView);
-//                options = recordOptions.create();
-//                options.show();
+
 
             };
 
+        });
+        holder.btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isPlaying) {
+                    playAudioFromUrl(record.getUrl());
+                    holder.btnPlay.setImageResource(R.drawable.stop_icon);// Change button image to pause icon
+                    isPlaying = true;
+                } else {
+                    stopAudioFromUrl();
+                    holder.btnPlay.setImageResource(R.drawable.play_icon); // Change button image to play icon
+                    isPlaying = false;
+                }
+                record_reference.child(record.getRecordId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Record record = dataSnapshot.getValue(Record.class);
+                        if (record.getSenderId() != Uid) {
+                            record.deliver_to_user(Uid);
+                            record_reference.child(record.getRecordId()).setValue(record);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle onCancelled
+                    }
+
+                });
+            }
         });
 
     }
@@ -184,11 +186,12 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
 
         CardView record_btn;
         TextView title;
+        ImageView btnPlay;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            btnPlay = itemView.findViewById(R.id.btnplay);
             record_btn = itemView.findViewById(R.id.record_view);
             title = itemView.findViewById(R.id.tvTitle);
 

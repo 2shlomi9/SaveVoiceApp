@@ -75,7 +75,7 @@ public class AudioManagerRecordingActivity extends AppCompatActivity implements 
 
     private String audioFilePath;
 
-    private ImageView recordButton ,deleteButton,listenAgainButton,sendButton, groupInfo;
+    private ImageView recordButton ,deleteButton,listenAgainButton,sendButton,backBtn, groupInfo;
     private TextView groupTitle;
     private RelativeLayout editRecord;
 
@@ -117,6 +117,7 @@ public class AudioManagerRecordingActivity extends AppCompatActivity implements 
         recordButton = findViewById(R.id.btnRecord);
         recordButton.setOnClickListener(this);
         editRecord = findViewById(R.id.editRecord);
+        backBtn = findViewById(R.id.backBtn);
         // recordingDuration = findViewById(R.id.tvRecordingDuration);
         deleteButton = findViewById(R.id.btnDelete);
         groupInfo = findViewById(R.id.groupInfo);
@@ -147,6 +148,13 @@ public class AudioManagerRecordingActivity extends AppCompatActivity implements 
         sent_record_adapter = new SentRecordAdapter(this, sent_records, dialog_builder);
 
         groupTitle.setText(groupName);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         groupInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
