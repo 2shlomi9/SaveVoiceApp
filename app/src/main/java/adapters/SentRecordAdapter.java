@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.RequiresApi;
 import android.content.Context;
 
+import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -29,7 +30,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
+import com.safevoiceapp.AudioMemberRecordingActivity;
 import com.safevoiceapp.R;
+import com.safevoiceapp.ReadPlayActivity;
 
 import java.io.IOException;
 
@@ -105,7 +108,7 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                holder.title.setText(user.getuserName() + "(" + user.getFullName() + ")"+getCurrentDate());
+                holder.title.setText(user.getuserName() + " (" + user.getFullName() + ") "+getCurrentDate());
             }
 
             @Override
@@ -120,47 +123,54 @@ public class SentRecordAdapter extends RecyclerView.Adapter<SentRecordAdapter.My
 
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(context , ReadPlayActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("RecordID", record.getRecordId());
+                intent.putExtra("RecordSender", record.getSenderId());
+                intent.putExtra("GroupID",record.getGroupId());
+                intent.putExtra("URL",record.getUrl());
+                context.startActivity(intent);
 
-                String recId=record.getRecordId();
-                String URL =record.getUrl();
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View contactPopupView = inflater.inflate(R.layout.record_player, null);
-                playButton = contactPopupView.findViewById(R.id.btnplay);
-                Read_receipts = contactPopupView.findViewById(R.id.txtReaders);
-
-                for (String id : record.getDelivered_users()){
-                    user_reference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User user = snapshot.getValue(User.class);
-                            readList += user.getFullName() + " \n";
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-
-                Read_receipts.setText(readList);
-                playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(isplaying){
-                            playButton.setImageResource(R.drawable.play_record_foreground);
-                            stopAudioFromUrl();
-                        }
-                        else {
-                            playButton.setImageResource(R.drawable.icon_pause);
-                            playAudioFromUrl(URL);
-                        }
-                        isplaying = !isplaying;
-                    }
-                });
-                recordOptions.setView(contactPopupView);
-                options = recordOptions.create();
-                options.show();
+//                String recId=record.getRecordId();
+//                String URL =record.getUrl();
+//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                View contactPopupView = inflater.inflate(R.layout.record_player, null);
+//                playButton = contactPopupView.findViewById(R.id.btnplay);
+//                Read_receipts = contactPopupView.findViewById(R.id.txtReaders);
+//
+//                for (String id : record.getDelivered_users()){
+//                    user_reference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            User user = snapshot.getValue(User.class);
+//                            readList += user.getFullName() + " \n";
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//                }
+//
+//                Read_receipts.setText(readList);
+//                playButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if(isplaying){
+//                            playButton.setImageResource(R.drawable.play_record_foreground);
+//                            stopAudioFromUrl();
+//                        }
+//                        else {
+//                            playButton.setImageResource(R.drawable.icon_pause);
+//                            playAudioFromUrl(URL);
+//                        }
+//                        isplaying = !isplaying;
+//                    }
+//                });
+//                recordOptions.setView(contactPopupView);
+//                options = recordOptions.create();
+//                options.show();
 
             };
 

@@ -105,14 +105,14 @@ public class MemberGroupInfoActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         group_reference.child(group.getGroupId()).setValue(group);
-                        Toast.makeText(context.getApplicationContext(), "exited from group "+group.getGroupName() + " successfully!", Toast.LENGTH_SHORT).show();
-                        user_reference.child(Uid).setValue(new ValueEventListener() {
+                        user_reference.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 User user = snapshot.getValue(User.class);
                                 user.exitGroup(groupId);
                                 user_reference.child(Uid).setValue(user);
-                                recyclerView.setAdapter(user_participants_adapter);
+                                Toast.makeText(context.getApplicationContext(), "exited from group "+group.getGroupName() + " successfully!", Toast.LENGTH_SHORT).show();
+                                refresh_users();
                             }
 
                             @Override

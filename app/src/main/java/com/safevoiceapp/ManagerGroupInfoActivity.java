@@ -87,7 +87,6 @@ public class ManagerGroupInfoActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
 
 
-
         //set title
         title.setText(groupName);
 
@@ -169,9 +168,7 @@ public class ManagerGroupInfoActivity extends AppCompatActivity {
 
            }
        });
-
-
-    refresh_users();
+        refresh_users();
 
     }
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.RequiresApi;
 import android.content.Context;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
 import com.safevoiceapp.R;
+import com.safevoiceapp.ReadPlayActivity;
 
 import java.io.IOException;
 
@@ -75,6 +77,7 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
         this.context = context;
         this.list = list;
         this.records_reference = FirebaseDatabase.getInstance().getReference("Records");
+        this.user_reference = FirebaseDatabase.getInstance().getReference("Users");
         this.currUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.sent_records = new ArrayList<String>();
         this.recordOptions = recordOptions;
@@ -124,34 +127,41 @@ public class ReceiveRecordAdapter extends RecyclerView.Adapter<ReceiveRecordAdap
         holder.record_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currUid=record.getRecordId();
-                String URL =record.getUrl();
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View contactPopupView = inflater.inflate(R.layout.record_player, null);
-
-                playButton = contactPopupView.findViewById(R.id.btnplay);
-
-
-                playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(isplaying){
-                            playButton.setImageResource(R.drawable.play_record_foreground);
-                            stopAudioFromUrl();
-                        }
-                        else {
-                            playButton.setImageResource(R.drawable.icon_pause);
-                            playAudioFromUrl(URL);
-                            record.deliver_to_user(Uid);
-                            holder.title.setBackgroundColor(R.color.green);
-                            record_reference.child(currUid).setValue(record);
-                        }
-                        isplaying = !isplaying;
-                    }
-                });
-                recordOptions.setView(contactPopupView);
-                options = recordOptions.create();
-                options.show();
+                Intent intent = new Intent(context , ReadPlayActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("RecordID", record.getRecordId());
+                intent.putExtra("RecordSender", record.getSenderId());
+                intent.putExtra("GroupID",record.getGroupId());
+                intent.putExtra("URL",record.getUrl());
+                context.startActivity(intent);
+//                currUid=record.getRecordId();
+//                String URL =record.getUrl();
+//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                View contactPopupView = inflater.inflate(R.layout.record_player, null);
+//
+//                playButton = contactPopupView.findViewById(R.id.btnplay);
+//
+//
+//                playButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if(isplaying){
+//                            playButton.setImageResource(R.drawable.play_record_foreground);
+//                            stopAudioFromUrl();
+//                        }
+//                        else {
+//                            playButton.setImageResource(R.drawable.icon_pause);
+//                            playAudioFromUrl(URL);
+//                            record.deliver_to_user(Uid);
+//                            holder.title.setBackgroundColor(R.color.green);
+//                            record_reference.child(currUid).setValue(record);
+//                        }
+//                        isplaying = !isplaying;
+//                    }
+//                });
+//                recordOptions.setView(contactPopupView);
+//                options = recordOptions.create();
+//                options.show();
 
             };
 

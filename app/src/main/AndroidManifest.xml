@@ -14,8 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
+        <activity
+            android:name=".ReadPlayActivity"
+            android:exported="false" />
         <activity
             android:name=".EditGroupActivity"
             android:exported="false" />
@@ -29,10 +30,10 @@
             android:name=".ManagerGroupInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".SafeModeActivity"
+            android:name=".AudioMemberRecordingActivity"
             android:exported="false" />
         <activity
-            android:name=".AudioMemberRecordingActivity"
+            android:name=".SafeModeActivity"
             android:exported="false" />
         <activity
             android:name=".MemberGroupInfoActivity"
